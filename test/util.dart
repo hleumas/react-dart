@@ -15,9 +15,9 @@ import 'package:react/src/js_interop_util.dart';
 import 'package:test/test.dart';
 
 Map getProps(dynamic elementOrComponent) {
-  var props = elementOrComponent.props;
+  final props = elementOrComponent.props;
 
-  return new Map.fromIterable(objectKeys(props), value: (key) => getProperty(props, key));
+  return Map.fromIterable(objectKeys(props), value: (key) => getProperty(props, key));
 }
 
 bool isDartComponent1(ReactElement element) =>
@@ -37,7 +37,7 @@ Map getDartComponentProps(ReactComponent dartComponent) {
 }
 
 Map getDartElementProps(ReactElement dartElement) {
-  return isDartComponent2(dartElement) ? new JsBackedMap.fromJs(dartElement.props) : dartElement.props.internal.props;
+  return isDartComponent2(dartElement) ? JsBackedMap.fromJs(dartElement.props) : dartElement.props.internal.props;
 }
 
 ReactComponent render(ReactElement reactElement) {
@@ -46,16 +46,16 @@ ReactComponent render(ReactElement reactElement) {
 
 /// Returns a new [Map.unmodifiable] with all argument maps merged in.
 Map unmodifiableMap([Map map1, Map map2, Map map3, Map map4]) {
-  var merged = {};
+  final merged = {};
   if (map1 != null) merged.addAll(map1);
   if (map2 != null) merged.addAll(map2);
   if (map3 != null) merged.addAll(map3);
   if (map4 != null) merged.addAll(map4);
-  return new Map.unmodifiable(merged);
+  return Map.unmodifiable(merged);
 }
 
 bool assertsEnabled() {
-  bool assertsEnabled = false;
+  var assertsEnabled = false;
   assert(assertsEnabled = true);
   return assertsEnabled;
 }
@@ -72,7 +72,7 @@ class RefTestCase {
   /// The ref to be passed into a component.
   final dynamic ref;
 
-  /// Verifies (usually via `expect`) that the ref was updated exactly once with [actualValue].
+  /// Verifies (usually via `expect`) that the ref was updated exactly once with `actualValue`.
   final Function(dynamic actualValue) verifyRefWasUpdated;
 
   /// Returns the current value of the ref.
@@ -107,7 +107,8 @@ class RefTestCaseCollection<T> {
     final calls = [];
     return RefTestCase(
       name: name,
-      ref: (value) => calls.add(value),
+      // ignore: unnecessary_lambdas, avoid_types_on_closure_parameters
+      ref: (dynamic value) => calls.add(value),
       verifyRefWasUpdated: (actualValue) => expect(calls, [same(actualValue)], reason: _reasonMessage(name)),
       getCurrent: () => calls.single,
     );
@@ -118,13 +119,14 @@ class RefTestCaseCollection<T> {
     final calls = [];
     return RefTestCase(
       name: name,
+      // ignore: unnecessary_lambdas, avoid_types_on_closure_parameters
       ref: (T value) => calls.add(value),
       verifyRefWasUpdated: (actualValue) => expect(calls, [same(actualValue)], reason: _reasonMessage(name)),
       getCurrent: () => calls.single,
     );
   }
 
-  RefTestCase createRefObjectCase<T>() {
+  RefTestCase createRefObjectCase() {
     const name = 'ref object';
     final ref = createRef<T>();
     return RefTestCase(
@@ -140,7 +142,7 @@ class RefTestCaseCollection<T> {
     final calls = [];
     return RefTestCase(
       name: name,
-      ref: allowInterop((value) => calls.add(value)),
+      ref: allowInterop(calls.add),
       verifyRefWasUpdated: (actualValue) => expect(calls, [same(actualValue)], reason: _reasonMessage(name)),
       getCurrent: () => calls.single,
       isJs: true,
@@ -175,7 +177,7 @@ class RefTestCaseCollection<T> {
         createJsRefObjectCase(),
       ];
 
-  RefTestCase createCaseByName<T>(String name) => createAllCases().singleWhere((c) => c.name == name);
+  RefTestCase createCaseByName(String name) => createAllCases().singleWhere((c) => c.name == name);
 
   List<String> get allTestCaseNames => createAllCases().map((c) => c.name).toList();
 }

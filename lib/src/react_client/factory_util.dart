@@ -34,7 +34,7 @@ dynamic convertArgsToChildren(List childrenArgs) {
 Function unconvertJsEventHandler(Function jsConvertedEventHandler) => null;
 
 void convertRefValue(Map args) {
-  var ref = args['ref'];
+  final ref = args['ref'];
   if (ref is Ref) {
     args['ref'] = ref.jsRef;
   }
@@ -48,7 +48,7 @@ void convertRefValue2(
   final refKeys = ['ref', ...additionalRefPropKeys];
 
   for (final refKey in refKeys) {
-    var ref = args[refKey];
+    final ref = args[refKey];
     if (ref is Ref) {
       args[refKey] = ref.jsRef;
       // If the ref is a callback, pass ReactJS a function that will call it
@@ -57,6 +57,7 @@ void convertRefValue2(
       // Use _CallbackRef<Null> to check arity, since parameters could be non-dynamic, and thus
       // would fail the `is _CallbackRef<dynamic>` check.
       // See https://github.com/dart-lang/sdk/issues/34593 for more information on arity checks.
+      // ignore: prefer_void_to_null
     } else if (ref is CallbackRef<Null> && convertCallbackRefValue) {
       args[refKey] = allowInterop((dynamic instance) {
         // Call as dynamic to perform dynamic dispatch, since we can't cast to _CallbackRef<dynamic>,

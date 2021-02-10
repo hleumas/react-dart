@@ -80,8 +80,8 @@ final Set<String> knownEventKeys = (() {
   };
 
   // Add support for capturing variants; e.g., onClick/onClickCapture
-  for (var key in _knownEventKeys.toList()) {
-    _knownEventKeys.add(key + 'Capture');
+  for (final key in _knownEventKeys.toList()) {
+    _knownEventKeys.add('${key}Capture');
   }
 
   return _knownEventKeys;

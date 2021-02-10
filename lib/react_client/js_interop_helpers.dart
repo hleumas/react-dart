@@ -3,9 +3,10 @@
 @JS()
 library react_client.js_interop_helpers;
 
-import "dart:js_util";
+import 'dart:js_util';
 
-import "package:js/js.dart";
+import 'package:js/js.dart';
+import 'package:react/react_client/react_interop.dart' show forwardRef2;
 
 // The following code is adapted from `package:js` in the dart-lang/sdk repo:
 // https://github.com/dart-lang/sdk/blob/2.2.0/sdk/lib/js_util/dart2js/js_util_dart2js.dart#L27
@@ -45,7 +46,7 @@ import "package:js/js.dart";
 /// methods in this library. Only use this method as a last resort.
 ///
 /// Recursively converts a JSON-like collection of Dart objects to a
-/// collection of JavaScript objects and returns a [JsObject] proxy to it.
+/// collection of JavaScript objects and returns a `JsObject` proxy to it.
 ///
 /// [object] must be a [Map] or [Iterable], the contents of which are also
 /// converted. Maps and Iterables are copied to a new JavaScript object.
@@ -53,13 +54,13 @@ import "package:js/js.dart";
 /// JavaScript type, and all other objects are proxied.
 dynamic jsifyAndAllowInterop(object) {
   if (object is! Map && object is! Iterable) {
-    throw new ArgumentError.value(object, 'object', 'must be a Map or Iterable');
+    throw ArgumentError.value(object, 'object', 'must be a Map or Iterable');
   }
   return _convertDataTree(object);
 }
 
 _convertDataTree(data) {
-  final _convertedObjects = new Map.identity();
+  final _convertedObjects = Map.identity();
 
   _convert(o) {
     if (_convertedObjects.containsKey(o)) {
@@ -68,7 +69,7 @@ _convertDataTree(data) {
     if (o is Map) {
       final convertedMap = newObject();
       _convertedObjects[o] = convertedMap;
-      for (var key in o.keys) {
+      for (final key in o.keys) {
         setProperty(convertedMap, key, _convert(o[key]));
       }
       return convertedMap;
@@ -91,5 +92,5 @@ _convertDataTree(data) {
 
 /// Keeps track of functions found when converting JS props to Dart props.
 ///
-/// See: [forwardRef] for usage / context.
+/// See: [forwardRef2] for usage / context.
 final isRawJsFunctionFromProps = Expando<bool>();

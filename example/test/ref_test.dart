@@ -1,11 +1,11 @@
 // ignore_for_file: deprecated_member_use_from_same_package
-import "dart:html";
+import 'dart:html';
 
-import "package:react/react.dart" as react;
-import "package:react/react_dom.dart" as react_dom;
-import "package:react/react_client.dart";
+import 'package:react/react.dart' as react;
+import 'package:react/react_dom.dart' as react_dom;
+import 'package:react/react_client.dart';
 
-var ChildComponent = react.registerComponent(() => new _ChildComponent());
+var ChildComponent = react.registerComponent(() => _ChildComponent());
 
 class _ChildComponent extends react.Component {
   int somevalue = 10;
@@ -14,7 +14,8 @@ class _ChildComponent extends react.Component {
     redraw();
   }
 
-  render() => react.span({}, "Child element with value ${somevalue}");
+  @override
+  render() => react.span({}, 'Child element with value $somevalue');
 }
 
 var InputComponentForm = react.forwardRef2((props, ref) {
@@ -39,14 +40,14 @@ var InputComponentForm = react.forwardRef2((props, ref) {
 
 var ChildComponentForm = react.forwardRef2((props, ref) {
   return react.Fragment({}, [
-    react.h4({'key': 'create-child-h4'}, "ChildComponent"),
+    react.h4({'key': 'create-child-h4'}, 'ChildComponent'),
     react.form({
       'key': 'childComponentForm',
       'className': 'form-inline'
     }, [
       ChildComponent({
         'key': 'create-child',
-        "ref": ref,
+        'ref': ref,
       }),
       '\u00a0',
       react.button({
@@ -66,28 +67,28 @@ var ChildComponentForm = react.forwardRef2((props, ref) {
   ]);
 }, displayName: 'ChildComponentForm');
 
-var ParentComponent = react.registerComponent(() => new _ParentComponent());
+var ParentComponent = react.registerComponent(() => _ParentComponent());
 
 class _ParentComponent extends react.Component {
   // String refs
   showInputValue(_) {
-    var input = react_dom.findDOMNode(ref('inputRef')) as InputElement;
+    final input = react_dom.findDOMNode(ref('inputRef')) as InputElement;
     print(input.value);
   }
 
   showChildValue(_) {
-    print(ref("childRef").somevalue);
+    print(ref('childRef').somevalue);
   }
 
   incrementChildValue(_) {
-    ref("childRef").incrementValue();
+    ref('childRef').incrementValue();
   }
 
   // Callback refs
   InputElement _inputCallbackRef;
   _ChildComponent _childCallbackRef;
   showInputCallbackRefValue(_) {
-    var input = react_dom.findDOMNode(_inputCallbackRef);
+    final input = react_dom.findDOMNode(_inputCallbackRef) as InputElement;
     print(input.value);
   }
 
@@ -104,7 +105,7 @@ class _ParentComponent extends react.Component {
   final Ref<_ChildComponent> _childCreateRef = react.createRef();
 
   showInputCreateRefValue(_) {
-    var input = react_dom.findDOMNode(_inputCreateRef.current);
+    final input = react_dom.findDOMNode(_inputCreateRef.current) as InputElement;
     print(input.value);
   }
 
@@ -116,13 +117,14 @@ class _ParentComponent extends react.Component {
     _childCreateRef.current.incrementValue();
   }
 
+  @override
   render() => react.div({}, [
         react.h1({'key': 'h1'}, 'Refs'),
         react.div({
           'key': 'string-refs'
         }, [
-          react.h2({'key': 'string-h2'}, "String refs"),
-          react.h4({'key': 'string-h4'}, "<input>"),
+          react.h2({'key': 'string-h2'}, 'String refs'),
+          react.h4({'key': 'string-h4'}, '<input>'),
           react.form({
             'key': 'stringRefInputForm',
             'className': 'form-inline'
@@ -140,12 +142,12 @@ class _ParentComponent extends react.Component {
               'onClick': showInputValue,
             }, 'Print input element value'),
           ]),
-          react.h4({'key': 'string-h4-child'}, "ChildComponent"),
+          react.h4({'key': 'string-h4-child'}, 'ChildComponent'),
           react.form({
             'key': 'stringRefChildComponentForm',
             'className': 'form-inline'
           }, [
-            ChildComponent({'key': 'string-child', "ref": "childRef"}),
+            ChildComponent({'key': 'string-child', 'ref': 'childRef'}),
             '\u00a0',
             react.button({
               'type': 'button',
@@ -165,8 +167,8 @@ class _ParentComponent extends react.Component {
         react.div({
           'key': 'callback-refs'
         }, [
-          react.h2({'key': 'h2-callback'}, "Callback refs"),
-          react.h4({'key': 'h4-callback-input'}, "<input>"),
+          react.h2({'key': 'h2-callback'}, 'Callback refs'),
+          react.h4({'key': 'h4-callback-input'}, '<input>'),
           react.form({
             'key': 'inputForm',
             'className': 'form-inline'
@@ -184,14 +186,14 @@ class _ParentComponent extends react.Component {
               'onClick': showInputCallbackRefValue,
             }, 'Print input element value'),
           ]),
-          react.h4({'key': 'callback-child-h4'}, "ChildComponent"),
+          react.h4({'key': 'callback-child-h4'}, 'ChildComponent'),
           react.form({
             'key': 'childComponentForm',
             'className': 'form-inline'
           }, [
             ChildComponent({
               'key': 'callback-child',
-              "ref": (instance) => _childCallbackRef = instance,
+              'ref': (instance) => _childCallbackRef = instance,
             }),
             '\u00a0',
             react.button({
@@ -212,8 +214,8 @@ class _ParentComponent extends react.Component {
         react.div({
           'key': 'forward-refs'
         }, [
-          react.h2({'key': 'h2-forward'}, "Create / Forward refs"),
-          react.h4({'key': 'h4-forward-input'}, "<input>"),
+          react.h2({'key': 'h2-forward'}, 'Create / Forward refs'),
+          react.h4({'key': 'h4-forward-input'}, '<input>'),
           InputComponentForm({
             'ref': _inputCreateRef,
             'showInputForwardRefValue': showInputCreateRefValue,
@@ -231,6 +233,6 @@ class _ParentComponent extends react.Component {
 
 var mountedNode = querySelector('#content');
 void main() {
-  var component = ParentComponent({});
+  final component = ParentComponent({});
   react_dom.render(component, mountedNode);
 }

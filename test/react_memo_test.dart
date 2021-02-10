@@ -80,7 +80,7 @@ void sharedMemoTests(MemoFunction memoFunction) {
             return prevProps['localCount'] == nextProps['localCount'];
           };
 
-    final MemoTest = memoFunction(react.registerFunctionComponent((Map props) {
+    final MemoTest = memoFunction(react.registerFunctionComponent((props) {
       childMemoRenderCount++;
       return react.div(
         {},
@@ -174,7 +174,8 @@ final MemoTestWrapper = react.registerComponent2(() => _MemoTestWrapperComponent
 class _MemoTestWrapperComponent extends react.Component2 {
   int redrawCount = 0;
 
-  get initialState => {
+  @override
+  get initialState => const {
         'localCount': 0,
         'valueMemoShouldIgnoreViaAreEqual': 0,
         'valueMemoShouldNotKnowAbout': 0,
@@ -186,24 +187,24 @@ class _MemoTestWrapperComponent extends react.Component2 {
   }
 
   void increaseLocalCount() {
-    this.setState({'localCount': this.state['localCount'] + 1});
+    setState({'localCount': state['localCount'] + 1});
   }
 
   void increaseValueMemoShouldIgnoreViaAreEqual() {
-    this.setState({'valueMemoShouldIgnoreViaAreEqual': this.state['valueMemoShouldIgnoreViaAreEqual'] + 1});
+    setState({'valueMemoShouldIgnoreViaAreEqual': state['valueMemoShouldIgnoreViaAreEqual'] + 1});
   }
 
   void increaseValueMemoShouldNotKnowAbout() {
-    this.setState({'valueMemoShouldNotKnowAbout': this.state['valueMemoShouldNotKnowAbout'] + 1});
+    setState({'valueMemoShouldNotKnowAbout': state['valueMemoShouldNotKnowAbout'] + 1});
   }
 
   @override
   render() {
     return react.div(
-      {},
+      const {},
       props['memoComponentFactory']({
-        'localCount': this.state['localCount'],
-        'valueMemoShouldIgnoreViaAreEqual': this.state['valueMemoShouldIgnoreViaAreEqual'],
+        'localCount': state['localCount'],
+        'valueMemoShouldIgnoreViaAreEqual': state['valueMemoShouldIgnoreViaAreEqual'],
       }),
     );
   }

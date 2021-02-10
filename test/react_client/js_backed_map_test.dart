@@ -13,7 +13,7 @@ main() {
   group('JsBackedMap', () {
     group('sets and retrieves values without JS interop interfering with them:', () {
       void testTypeValue(dynamic testValue) {
-        final jsBackedMap = new JsBackedMap();
+        final jsBackedMap = JsBackedMap();
         jsBackedMap['testValue'] = testValue;
         expect(jsBackedMap['testValue'], same(testValue));
       }
@@ -58,14 +58,14 @@ main() {
     });
 
     test('addAllFromJs adds all properties from another JS object', () {
-      final jsMap = new JsBackedMap.from({
+      final jsMap = JsBackedMap.from({
         'foo': 1,
         'bar': 2,
-      });
-      jsMap.addAllFromJs(jsify({
-        'foo': 'overwritten',
-        'baz': 3,
-      }));
+      })
+        ..addAllFromJs(jsify({
+          'foo': 'overwritten',
+          'baz': 3,
+        }));
       expect(jsMap, {
         'foo': 'overwritten',
         'bar': 2,
@@ -112,7 +112,7 @@ main() {
       JsBackedMap testMap;
 
       setUp(() {
-        testMap = new JsBackedMap.from({
+        testMap = JsBackedMap.from({
           'foo': 1,
           'bar': 2,
         });
@@ -140,7 +140,7 @@ main() {
         });
 
         test('with a JSBackedMap (special case)', () {
-          testMap.addAll(new JsBackedMap.from({
+          testMap.addAll(JsBackedMap.from({
             'foo': 'overwritten',
             'baz': 3,
           }));

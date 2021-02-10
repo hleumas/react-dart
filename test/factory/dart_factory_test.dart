@@ -57,7 +57,7 @@ main() {
   });
 }
 
-final Foo = react.registerComponent(() => new _Foo()) as ReactDartComponentFactoryProxy;
+final Foo = react.registerComponent(() => _Foo()) as ReactDartComponentFactoryProxy;
 
 class _Foo extends react.Component {
   @override
@@ -67,7 +67,7 @@ class _Foo extends react.Component {
   }
 }
 
-final Foo2 = react.registerComponent2(() => new _Foo2());
+final Foo2 = react.registerComponent2(() => _Foo2());
 
 class _Foo2 extends react.Component2 {
   @override

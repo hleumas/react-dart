@@ -107,5 +107,5 @@ SyntheticDataTransfer syntheticDataTransferFactory(Object dt) {
   final files = <File>[...?rawFiles];
   final types = <String>[...?rawTypes];
 
-  return new SyntheticDataTransfer(dropEffect, effectAllowed, files, types);
+  return SyntheticDataTransfer(dropEffect, effectAllowed, files, types);
 }

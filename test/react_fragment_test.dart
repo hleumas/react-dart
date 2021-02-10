@@ -27,7 +27,7 @@ main() {
             react.div({}),
           ])
         ]),
-        new Element.div(),
+        Element.div(),
       );
 
       expect(wrappingDivRef.children, hasLength(4));
@@ -36,7 +36,7 @@ main() {
     test('passes the key properly onto the fragment', () {
       var callCount = 0;
 
-      var mountElement = new Element.div();
+      final mountElement = Element.div();
 
       react_dom.render(
           react.Fragment({
@@ -75,9 +75,10 @@ class _FragmentTestDummy extends react.Component2 {
     props['onComponentDidMount']();
   }
 
+  @override
   render() {
     return react.button(props, 'hi');
   }
 }
 
-final FragmentTestDummy = react.registerComponent2(() => new _FragmentTestDummy());
+final FragmentTestDummy = react.registerComponent2(() => _FragmentTestDummy());

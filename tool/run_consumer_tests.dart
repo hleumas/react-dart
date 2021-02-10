@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-Future<Null> main(List<String> args) async {
-  final parser = new ArgParser()
+Future<void> main(List<String> args) async {
+  final parser = ArgParser()
     ..addOption('repoName')
     ..addOption('orgName')
     ..addOption('testCmd')

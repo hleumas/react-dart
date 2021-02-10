@@ -2,15 +2,15 @@
 @JS()
 library react.lifecycle_test.component2;
 
-import "package:js/js.dart";
+import 'package:js/js.dart';
 import 'package:react/react.dart' as react;
 import 'package:react/react_client/react_interop.dart';
 
 import 'util.dart';
 
-final SetStateTest = react.registerComponent2(() => new _SetStateTest(), skipMethods: [null]);
-final DefaultSkipMethodsTest = react.registerComponent2(() => new _SetStateTest());
-final SkipMethodsTest = react.registerComponent2(() => new _SetStateTest(), skipMethods: ['getSnapshotBeforeUpdate']);
+final SetStateTest = react.registerComponent2(() => _SetStateTest(), skipMethods: [null]);
+final DefaultSkipMethodsTest = react.registerComponent2(() => _SetStateTest());
+final SkipMethodsTest = react.registerComponent2(() => _SetStateTest(), skipMethods: ['getSnapshotBeforeUpdate']);
 
 class _SetStateTest extends react.Component2 with LifecycleTestHelper {
   @override
@@ -52,13 +52,13 @@ class _SetStateTest extends react.Component2 with LifecycleTestHelper {
   @override
   componentDidCatch(dynamic error, ReactErrorInfo info) {
     lifecycleCall('componentDidCatch', arguments: [error, info]);
-    this.setState({'error': error, 'info': info.componentStack});
+    setState({'error': error, 'info': info.componentStack});
   }
 
   @override
   Map getDerivedStateFromError(error) {
     lifecycleCall('getDerivedStateFromError', arguments: [error]);
-    return {"shouldThrow": false, "errorFromGetDerivedState": error};
+    return {'shouldThrow': false, 'errorFromGetDerivedState': error};
   }
 
   Map outerTransactionalSetStateCallback(Map previousState, __) {
@@ -71,6 +71,7 @@ class _SetStateTest extends react.Component2 with LifecycleTestHelper {
     return {'counter': previousState['counter'] + 1};
   }
 
+  @override
   render() {
     lifecycleCall('render');
 
@@ -110,45 +111,52 @@ class _SetStateTest extends react.Component2 with LifecycleTestHelper {
               });
             }
           }, [
-            state["shouldThrow"] ? ErrorComponent({"key": "errorComp"}) : null,
+            state['shouldThrow'] ? ErrorComponent({'key': 'errorComp'}) : null,
             state['counter']
           ]));
     }
   }
 }
 
-_DefaultPropsCachingTest defaultPropsCachingTestComponentFactory() => new _DefaultPropsCachingTest();
+_DefaultPropsCachingTest defaultPropsCachingTestComponentFactory() => _DefaultPropsCachingTest();
 
 class _DefaultPropsCachingTest extends react.Component2 implements DefaultPropsCachingTestHelper {
   static int getDefaultPropsCallCount = 0;
 
+  @override
   int get staticGetDefaultPropsCallCount => getDefaultPropsCallCount;
 
   @override
   set staticGetDefaultPropsCallCount(int value) => getDefaultPropsCallCount = value;
 
-  Map get defaultProps {
+  @override
+  get defaultProps {
     getDefaultPropsCallCount++;
     return {'getDefaultPropsCallCount': getDefaultPropsCallCount};
   }
 
-  render() => false;
+  @override
+  render() => null;
 }
 
-final DefaultPropsTest = react.registerComponent2(() => new _DefaultPropsTest());
+final DefaultPropsTest = react.registerComponent2(() => _DefaultPropsTest());
 
 class _DefaultPropsTest extends react.Component2 {
-  Map get defaultProps => {'defaultProp': 'default'};
+  @override
+  get defaultProps => const {'defaultProp': 'default'};
 
-  render() => false;
+  @override
+  render() => null;
 }
 
-final PropTypesTest = react.registerComponent2(() => new PropTypesTestComponent());
+final PropTypesTest = react.registerComponent2(() => PropTypesTestComponent());
 
 class PropTypesTestComponent extends react.Component2 {
+  @override
   get propTypes => {
+        // ignore: avoid_types_on_closure_parameters
         'intProp': (Map props, info) {
-          var propValue = props[info.propName];
+          final propValue = props[info.propName];
           if (propValue is! int) {
             return ArgumentError(
                 '${info.propName} should be int. {"props": "$props", "propName": "${info.propName}", "componentName": "${info.componentName}", "location": "${info.location}", "propFullName": "${info.propFullName}"}');
@@ -157,23 +165,26 @@ class PropTypesTestComponent extends react.Component2 {
         }
       };
 
-  render() => '';
+  @override
+  render() => null;
 }
 
 react.Context LifecycleTestContext = react.createContext();
 
-final ContextConsumerWrapper = react.registerComponent2(() => new _ContextConsumerWrapper());
+final ContextConsumerWrapper = react.registerComponent2(() => _ContextConsumerWrapper());
 
 class _ContextConsumerWrapper extends react.Component2 with LifecycleTestHelper {
-  dynamic render() {
+  @override
+  render() {
     return LifecycleTestContext.Consumer({}, props['children'].first);
   }
 }
 
-final ContextWrapper = react.registerComponent2(() => new _ContextWrapper());
+final ContextWrapper = react.registerComponent2(() => _ContextWrapper());
 
 class _ContextWrapper extends react.Component2 with LifecycleTestHelper {
-  dynamic render() {
+  @override
+  render() {
     return LifecycleTestContext.Provider(
       {
         'value': {'foo': props['foo']}
@@ -183,14 +194,14 @@ class _ContextWrapper extends react.Component2 with LifecycleTestHelper {
   }
 }
 
-final LifecycleTestWithContext = react.registerComponent2(() => new _LifecycleTestWithContext());
+final LifecycleTestWithContext = react.registerComponent2(() => _LifecycleTestWithContext());
 
 class _LifecycleTestWithContext extends _LifecycleTest {
   @override
   get contextType => LifecycleTestContext;
 }
 
-final ErrorComponent = react.registerComponent2(() => new _ErrorComponent());
+final ErrorComponent = react.registerComponent2(() => _ErrorComponent());
 
 class TestDartException implements Exception {
   int code;
@@ -198,6 +209,7 @@ class TestDartException implements Exception {
 
   TestDartException(this.message, this.code);
 
+  @override
   toString() {
     return message;
   }
@@ -205,69 +217,91 @@ class TestDartException implements Exception {
 
 class _ErrorComponent extends react.Component2 {
   void _throwError() {
-    throw TestDartException("It crashed!", 100);
+    throw TestDartException('It crashed!', 100);
   }
 
-  void render() {
+  @override
+  render() {
     _throwError();
-    return react.div({'key': 'defaultMessage'}, "Error");
+    return react.div({'key': 'defaultMessage'}, 'Error');
   }
 }
 
-final ErrorLifecycleTest = react.registerComponent2(() => new _LifecycleTest(), skipMethods: []);
-final LifecycleTest = react.registerComponent2(() => new _LifecycleTest());
+final ErrorLifecycleTest = react.registerComponent2(() => _LifecycleTest(), skipMethods: []);
+final LifecycleTest = react.registerComponent2(() => _LifecycleTest());
 
 class _LifecycleTest extends react.Component2 with LifecycleTestHelper {
+  @override
   void componentDidMount() => lifecycleCall('componentDidMount');
+  @override
   void componentWillUnmount() => lifecycleCall('componentWillUnmount');
 
+  @override
   Map getDerivedStateFromProps(nextProps, prevState) => lifecycleCall('getDerivedStateFromProps',
-      arguments: [new Map.from(nextProps), new Map.from(prevState)], staticProps: nextProps);
+      arguments: [Map.from(nextProps), Map.from(prevState)], staticProps: nextProps);
 
+  @override
   dynamic getSnapshotBeforeUpdate(prevProps, prevState) =>
-      lifecycleCall('getSnapshotBeforeUpdate', arguments: [new Map.from(prevProps), new Map.from(prevState)]);
+      lifecycleCall('getSnapshotBeforeUpdate', arguments: [Map.from(prevProps), Map.from(prevState)]);
 
+  @override
   void componentDidUpdate(prevProps, prevState, [snapshot]) =>
-      lifecycleCall('componentDidUpdate', arguments: [new Map.from(prevProps), new Map.from(prevState), snapshot]);
+      lifecycleCall('componentDidUpdate', arguments: [Map.from(prevProps), Map.from(prevState), snapshot]);
 
+  @override
   void componentDidCatch(error, info) => lifecycleCall('componentDidCatch', arguments: [error, info]);
 
-  Map getDerivedStateFromError(error) => lifecycleCall('getDerivedStateFromError', arguments: [error]);
+  @override
+  getDerivedStateFromError(error) => lifecycleCall('getDerivedStateFromError', arguments: [error]);
 
+  @override
   bool shouldComponentUpdate(nextProps, nextState) => lifecycleCall('shouldComponentUpdate',
-      arguments: [new Map.from(nextProps), new Map.from(nextState)], defaultReturnValue: () => true);
+      arguments: [Map.from(nextProps), Map.from(nextState)], defaultReturnValue: () => true);
 
-  dynamic render() => lifecycleCall('render', defaultReturnValue: () => react.div({}));
+  @override
+  render() => lifecycleCall('render', defaultReturnValue: () => react.div({}));
 
-  Map get initialState => lifecycleCall('initialState', defaultReturnValue: () => {});
+  @override
+  get initialState => lifecycleCall('initialState', defaultReturnValue: () => {});
 
-  Map get defaultProps => lifecycleCall('defaultProps', defaultReturnValue: () => {'defaultProp': 'default'});
+  @override
+  get defaultProps => lifecycleCall('defaultProps', defaultReturnValue: () => {'defaultProp': 'default'});
 }
 
 final NoGetDerivedStateFromErrorLifecycleTest =
-    react.registerComponent2(() => new _NoGetDerivedStateFromErrorLifecycleTest(), skipMethods: []);
+    react.registerComponent2(() => _NoGetDerivedStateFromErrorLifecycleTest(), skipMethods: []);
 
 class _NoGetDerivedStateFromErrorLifecycleTest extends react.Component2 with LifecycleTestHelper {
+  @override
   void componentDidMount() => lifecycleCall('componentDidMount');
+  @override
   void componentWillUnmount() => lifecycleCall('componentWillUnmount');
 
-  Map getDerivedStateFromProps(nextProps, prevState) => lifecycleCall('getDerivedStateFromProps',
-      arguments: [new Map.from(nextProps), new Map.from(prevState)], staticProps: nextProps);
+  @override
+  getDerivedStateFromProps(nextProps, prevState) => lifecycleCall('getDerivedStateFromProps',
+      arguments: [Map.from(nextProps), Map.from(prevState)], staticProps: nextProps);
 
+  @override
   dynamic getSnapshotBeforeUpdate(prevProps, prevState) =>
-      lifecycleCall('getSnapshotBeforeUpdate', arguments: [new Map.from(prevProps), new Map.from(prevState)]);
+      lifecycleCall('getSnapshotBeforeUpdate', arguments: [Map.from(prevProps), Map.from(prevState)]);
 
+  @override
   void componentDidUpdate(prevProps, prevState, [snapshot]) =>
-      lifecycleCall('componentDidUpdate', arguments: [new Map.from(prevProps), new Map.from(prevState), snapshot]);
+      lifecycleCall('componentDidUpdate', arguments: [Map.from(prevProps), Map.from(prevState), snapshot]);
 
+  @override
   void componentDidCatch(error, info) => lifecycleCall('componentDidCatch', arguments: [error, info]);
 
+  @override
   bool shouldComponentUpdate(nextProps, nextState) => lifecycleCall('shouldComponentUpdate',
-      arguments: [new Map.from(nextProps), new Map.from(nextState)], defaultReturnValue: () => true);
+      arguments: [Map.from(nextProps), Map.from(nextState)], defaultReturnValue: () => true);
 
-  dynamic render() => lifecycleCall('render', defaultReturnValue: () => react.div({}));
+  @override
+  render() => lifecycleCall('render', defaultReturnValue: () => react.div({}));
 
-  Map get initialState => lifecycleCall('initialState', defaultReturnValue: () => {});
+  @override
+  get initialState => lifecycleCall('initialState', defaultReturnValue: () => {});
 
-  Map get defaultProps => lifecycleCall('defaultProps', defaultReturnValue: () => {'defaultProp': 'default'});
+  @override
+  get defaultProps => lifecycleCall('defaultProps', defaultReturnValue: () => {'defaultProp': 'default'});
 }

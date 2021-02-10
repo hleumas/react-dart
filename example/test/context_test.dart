@@ -25,7 +25,7 @@ void main() {
           }),
           newContextConsumerObservedBitsComponent({
             'key': 'newConsumerObservedBitsComponent',
-            'unstable_observedBits': (1 << 2),
+            'unstable_observedBits': 1 << 2,
           }),
           newContextTypeConsumerComponentComponent({'key': 'newContextTypeConsumerComponent'}, []),
         ]),

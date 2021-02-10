@@ -9,13 +9,13 @@ import 'package:react/react.dart' show Component;
 import 'package:react/react_client/react_interop.dart' show ReactDom;
 import 'package:react/src/react_client/private_utils.dart' show validateJsApiThenReturn;
 
-/// Renders a ReactElement into the DOM in the supplied [container] and return a reference to the [component]
+/// Renders a `ReactElement` into the DOM in the supplied `container` and returns a reference to the component
 /// (or returns null for stateless components).
 ///
-/// If the ReactElement was previously rendered into the [container], this will perform an update on it and only
+/// If the `ReactElement` was previously rendered into the `container`, this will perform an update on it and only
 /// mutate the DOM as necessary to reflect the latest React component.
 ///
-/// TODO: Is there any reason to omit the [ReactElement] type for [component] or the [Element] type for [container]?
+/// TODO: Is there any reason to omit the `ReactElement` type for `component` or the `Element` type for `container`?
 Function render = validateJsApiThenReturn(() => ReactDom.render);
 
 /// Removes a mounted React component from the DOM and cleans up its event handlers and state.
@@ -23,7 +23,7 @@ Function render = validateJsApiThenReturn(() => ReactDom.render);
 /// > Returns `false` if no component was mounted in the container specified via [render], otherwise returns `true`.
 Function unmountComponentAtNode = validateJsApiThenReturn(() => ReactDom.unmountComponentAtNode);
 
-/// If the component has been mounted into the DOM, this returns the corresponding native browser DOM [Element].
+/// If the component has been mounted into the DOM, this returns the corresponding native browser DOM `Element`.
 Function findDOMNode = validateJsApiThenReturn(() => _findDomNode);
 
 dynamic _findDomNode(component) {

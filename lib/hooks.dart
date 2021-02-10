@@ -33,7 +33,7 @@ class StateHook<T> {
   /// initialize [_value] to the return value of [init].
   ///
   /// See: <https://reactjs.org/docs/hooks-reference.html#lazy-initial-state>.
-  StateHook.lazy(T init()) {
+  StateHook.lazy(T Function() init) {
     final result = React.useState(allowInterop(init));
     _value = result[0];
     _setValue = result[1];
@@ -52,7 +52,7 @@ class StateHook<T> {
   /// Updates [value] to the return value of [computeNewValue].
   ///
   /// See: <https://reactjs.org/docs/hooks-reference.html#functional-updates>.
-  void setWithUpdater(T computeNewValue(T oldValue)) => _setValue(allowInterop(computeNewValue));
+  void setWithUpdater(T Function(T oldValue) computeNewValue) => _setValue(allowInterop(computeNewValue));
 }
 
 /// Adds local state to a [DartFunctionComponent]
@@ -100,7 +100,7 @@ StateHook<T> useState<T>(T initialValue) => StateHook(initialValue);
 /// ```
 ///
 /// Learn more: <https://reactjs.org/docs/hooks-reference.html#lazy-initial-state>.
-StateHook<T> useStateLazy<T>(T init()) => StateHook.lazy(init);
+StateHook<T> useStateLazy<T>(T Function() init) => StateHook.lazy(init);
 
 /// Runs [sideEffect] after every completed render of a [DartFunctionComponent].
 ///
@@ -141,8 +141,8 @@ StateHook<T> useStateLazy<T>(T init()) => StateHook.lazy(init);
 ///
 /// See: <https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects>.
 void useEffect(dynamic Function() sideEffect, [List<Object> dependencies]) {
-  var wrappedSideEffect = allowInterop(() {
-    var result = sideEffect();
+  final wrappedSideEffect = allowInterop(() {
+    final result = sideEffect();
     if (result is Function) {
       return allowInterop(result);
     }
@@ -165,10 +165,10 @@ void useEffect(dynamic Function() sideEffect, [List<Object> dependencies]) {
 ///
 /// Learn more: <https://reactjs.org/docs/hooks-reference.html#usereducer>.
 class ReducerHook<TState, TAction, TInit> {
-  /// The first item of the pair returned by [React.userReducer].
+  /// The first item of the pair returned by [React.useReducer].
   TState _state;
 
-  /// The second item in the pair returned by [React.userReducer].
+  /// The second item in the pair returned by [React.useReducer].
   void Function(TAction) _dispatch;
 
   ReducerHook(TState Function(TState state, TAction action) reducer, TState initialState) {
@@ -201,7 +201,7 @@ class ReducerHook<TState, TAction, TInit> {
   void dispatch(TAction action) => _dispatch(action);
 }
 
-/// Initializes state of a [DartFunctionComponent] to [initialState] and creates [dispatch] method.
+/// Initializes state of a [DartFunctionComponent] to [initialState] and creates a `dispatch` method.
 ///
 /// __Example__:
 ///
@@ -241,7 +241,7 @@ ReducerHook<TState, TAction, TInit> useReducer<TState, TAction, TInit>(
         TState Function(TState state, TAction action) reducer, TState initialState) =>
     ReducerHook(reducer, initialState);
 
-/// Initializes state of a [DartFunctionComponent] to [init(initialArg)] and creates [dispatch] method.
+/// Initializes state of a [DartFunctionComponent] to `init(initialArg)` and creates `dispatch` method.
 ///
 /// __Example__:
 ///
@@ -581,7 +581,7 @@ void useImperativeHandle(dynamic ref, dynamic Function() createHandle, [List<dyn
 ///   return isOnline;
 /// }
 ///
-/// final FriendListItem = react.registerFunctionComponent((Map props) {
+/// final FriendListItem = react.registerFunctionComponent((props) {
 ///   final isOnline = useFriendStatus(props['friend']['id']);
 ///
 ///   return react.li({

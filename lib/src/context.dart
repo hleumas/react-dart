@@ -110,11 +110,11 @@ Context<TValue> createContext<TValue>([
         ContextHelpers.unjsifyNewContext(currentValue), ContextHelpers.unjsifyNewContext(nextValue));
   }
 
-  var JSContext = React.createContext(ContextHelpers.jsifyNewContext(defaultValue),
+  final JSContext = React.createContext(ContextHelpers.jsifyNewContext(defaultValue),
       calculateChangedBits != null ? allowInterop(jsifyCalculateChangedBitsArgs) : null);
   return Context(
-    new ReactJsContextComponentFactoryProxy(JSContext.Provider, isProvider: true),
-    new ReactJsContextComponentFactoryProxy(JSContext.Consumer, isConsumer: true),
+    ReactJsContextComponentFactoryProxy(JSContext.Provider, isProvider: true),
+    ReactJsContextComponentFactoryProxy(JSContext.Consumer, isConsumer: true),
     JSContext,
   );
 }
@@ -130,7 +130,7 @@ abstract class ContextHelpers {
   // Wraps context value in a JS Object for use on the JS side.
   // It is wrapped so that the same Dart value can be retrieved from Dart with [_unjsifyNewContext].
   static dynamic jsifyNewContext(dynamic context) {
-    var jsContextHolder = newObject();
+    final jsContextHolder = newObject();
     setProperty(jsContextHolder, _reactDartContextSymbol, context);
     return jsContextHolder;
   }

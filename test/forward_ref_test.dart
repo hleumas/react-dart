@@ -33,13 +33,13 @@ main() {
 
     group('sets displayName on the rendered component as expected', () {
       test('falling back to "Anonymous" when the displayName argument is not passed to forwardRef', () {
-        var ForwardRefTestComponent = forwardRef((props, ref) {});
+        final ForwardRefTestComponent = forwardRef((props, ref) {});
         expect(getProperty(getProperty(ForwardRefTestComponent.type, 'render'), 'displayName'), 'Anonymous');
       });
 
       test('when displayName argument is passed to forwardRef', () {
         const name = 'ForwardRefTestComponent';
-        var ForwardRefTestComponent = forwardRef((props, ref) {}, displayName: name);
+        final ForwardRefTestComponent = forwardRef((props, ref) {}, displayName: name);
         expect(getProperty(getProperty(ForwardRefTestComponent.type, 'render'), 'displayName'), name);
       });
     });
@@ -64,13 +64,13 @@ main() {
 
     group('sets name on the rendered component as expected', () {
       test('unless the displayName argument is not passed to forwardRef2', () {
-        var ForwardRefTestComponent = forwardRef2((props, ref) {});
+        final ForwardRefTestComponent = forwardRef2((props, ref) {});
         expect(getProperty(getProperty(ForwardRefTestComponent.type, 'render'), 'name'), anyOf('', isNull));
       });
 
       test('when displayName argument is passed to forwardRef2', () {
         const name = 'ForwardRefTestComponent';
-        var ForwardRefTestComponent = forwardRef2((props, ref) {}, displayName: name);
+        final ForwardRefTestComponent = forwardRef2((props, ref) {}, displayName: name);
         expect(getProperty(getProperty(ForwardRefTestComponent.type, 'render'), 'name'), name);
       });
     });

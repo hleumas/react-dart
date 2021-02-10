@@ -99,10 +99,10 @@ main() {
     }
 
     test('wrapNativeKeyboardEvent', () {
-      var nativeKeyboardEvent = MockKeyboardEvent();
-      var currentTarget = DivElement();
-      var target = DivElement();
-      var calls = <String>[];
+      final nativeKeyboardEvent = MockKeyboardEvent();
+      final currentTarget = DivElement();
+      final target = DivElement();
+      final calls = <String>[];
 
       when(nativeKeyboardEvent.bubbles).thenReturn(true);
       when(nativeKeyboardEvent.cancelable).thenReturn(true);
@@ -125,7 +125,7 @@ main() {
 
       expect(nativeKeyboardEvent.defaultPrevented, isFalse);
 
-      var syntheticKeyboardEvent = wrapNativeKeyboardEvent(nativeKeyboardEvent);
+      final syntheticKeyboardEvent = wrapNativeKeyboardEvent(nativeKeyboardEvent);
 
       expect(syntheticKeyboardEvent, isA<SyntheticKeyboardEvent>());
 
@@ -133,7 +133,7 @@ main() {
       expect(syntheticKeyboardEvent.cancelable, isTrue);
       expect(syntheticKeyboardEvent.currentTarget, currentTarget);
       expect(syntheticKeyboardEvent.defaultPrevented, isFalse);
-      expect(() => syntheticKeyboardEvent.preventDefault(), returnsNormally);
+      expect(syntheticKeyboardEvent.preventDefault, returnsNormally);
       expect(calls, contains('preventDefault'));
       expect(() => syntheticKeyboardEvent.stopPropagation(), returnsNormally);
       expect(calls, contains('stopPropagation'));
@@ -157,11 +157,11 @@ main() {
     });
 
     test('wrapNativeMouseEvent', () {
-      var nativeMouseEvent = MockMouseEvent();
-      var currentTarget = DivElement();
-      var target = DivElement();
-      var relatedTarget = DivElement();
-      var calls = <String>[];
+      final nativeMouseEvent = MockMouseEvent();
+      final currentTarget = DivElement();
+      final target = DivElement();
+      final relatedTarget = DivElement();
+      final calls = <String>[];
 
       when(nativeMouseEvent.bubbles).thenReturn(true);
       when(nativeMouseEvent.cancelable).thenReturn(true);
@@ -183,7 +183,7 @@ main() {
       when(nativeMouseEvent.page).thenReturn(Point(3, 4));
       when(nativeMouseEvent.screen).thenReturn(Point(5, 6));
 
-      var syntheticMouseEvent = wrapNativeMouseEvent(nativeMouseEvent);
+      final syntheticMouseEvent = wrapNativeMouseEvent(nativeMouseEvent);
 
       expect(syntheticMouseEvent, isA<SyntheticMouseEvent>());
 
@@ -191,7 +191,7 @@ main() {
       expect(syntheticMouseEvent.cancelable, isTrue);
       expect(syntheticMouseEvent.currentTarget, currentTarget);
       expect(syntheticMouseEvent.defaultPrevented, isFalse);
-      expect(() => syntheticMouseEvent.preventDefault(), returnsNormally);
+      expect(syntheticMouseEvent.preventDefault, returnsNormally);
       expect(calls, contains('preventDefault'));
       expect(() => syntheticMouseEvent.stopPropagation(), returnsNormally);
       expect(calls, contains('stopPropagation'));
@@ -218,8 +218,8 @@ main() {
     });
 
     test('fakeSyntheticFormEvent', () {
-      var element = DivElement();
-      var fakeEvent = fakeSyntheticFormEvent(element, 'change');
+      final element = DivElement();
+      final fakeEvent = fakeSyntheticFormEvent(element, 'change');
 
       expect(fakeEvent, isA<SyntheticFormEvent>());
 
@@ -227,7 +227,7 @@ main() {
       expect(fakeEvent.cancelable, isFalse);
       expect(fakeEvent.currentTarget, element);
       expect(fakeEvent.defaultPrevented, false);
-      expect(() => fakeEvent.preventDefault(), returnsNormally);
+      expect(fakeEvent.preventDefault, returnsNormally);
       expect(() => fakeEvent.stopPropagation(), returnsNormally);
       expect(fakeEvent.eventPhase, Event.AT_TARGET);
       expect(fakeEvent.isTrusted, isFalse);
@@ -432,11 +432,11 @@ main() {
             timeStamp: 100,
             type: 'non-default',
             altKey: true,
-            char: testString + '1',
+            char: '${testString}1',
             ctrlKey: true,
-            locale: testString + '2',
+            locale: '${testString}2',
             location: 1,
-            key: testString + '3',
+            key: '${testString}3',
             metaKey: true,
             repeat: true,
             shiftKey: true,
@@ -446,11 +446,11 @@ main() {
 
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
-          expect(baseEvent.char, testString + '1');
+          expect(baseEvent.char, '${testString}1');
           expect(baseEvent.ctrlKey, isTrue);
-          expect(baseEvent.locale, testString + '2');
+          expect(baseEvent.locale, '${testString}2');
           expect(baseEvent.location, 1);
-          expect(baseEvent.key, testString + '3');
+          expect(baseEvent.key, '${testString}3');
           expect(baseEvent.metaKey, isTrue);
           expect(baseEvent.repeat, isTrue);
           expect(baseEvent.shiftKey, isTrue);
@@ -473,11 +473,11 @@ main() {
             timeStamp: 200,
             type: 'updated non-default',
             altKey: false,
-            char: updatedTestString + '1',
+            char: '${updatedTestString}1',
             ctrlKey: false,
-            locale: updatedTestString + '2',
+            locale: '${updatedTestString}2',
             location: 2,
-            key: updatedTestString + '3',
+            key: '${updatedTestString}3',
             metaKey: false,
             repeat: false,
             shiftKey: false,
@@ -487,11 +487,11 @@ main() {
 
           testSyntheticEventBaseAfterMerge(newEvent);
           expect(newEvent.altKey, isFalse);
-          expect(newEvent.char, updatedTestString + '1');
+          expect(newEvent.char, '${updatedTestString}1');
           expect(newEvent.ctrlKey, isFalse);
-          expect(newEvent.locale, updatedTestString + '2');
+          expect(newEvent.locale, '${updatedTestString}2');
           expect(newEvent.location, 2);
-          expect(newEvent.key, updatedTestString + '3');
+          expect(newEvent.key, '${updatedTestString}3');
           expect(newEvent.metaKey, isFalse);
           expect(newEvent.repeat, isFalse);
           expect(newEvent.shiftKey, isFalse);
@@ -517,11 +517,11 @@ main() {
             timeStamp: 100,
             type: 'non-default',
             altKey: true,
-            char: testString + '1',
+            char: '${testString}1',
             ctrlKey: true,
-            locale: testString + '2',
+            locale: '${testString}2',
             location: 1,
-            key: testString + '3',
+            key: '${testString}3',
             metaKey: true,
             repeat: true,
             shiftKey: true,
@@ -531,11 +531,11 @@ main() {
 
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
-          expect(baseEvent.char, testString + '1');
+          expect(baseEvent.char, '${testString}1');
           expect(baseEvent.ctrlKey, isTrue);
-          expect(baseEvent.locale, testString + '2');
+          expect(baseEvent.locale, '${testString}2');
           expect(baseEvent.location, 1);
-          expect(baseEvent.key, testString + '3');
+          expect(baseEvent.key, '${testString}3');
           expect(baseEvent.metaKey, isTrue);
           expect(baseEvent.repeat, isTrue);
           expect(baseEvent.shiftKey, isTrue);
@@ -545,11 +545,11 @@ main() {
           final newEvent = createSyntheticKeyboardEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
           expect(newEvent.altKey, isTrue);
-          expect(newEvent.char, testString + '1');
+          expect(newEvent.char, '${testString}1');
           expect(newEvent.ctrlKey, isTrue);
-          expect(newEvent.locale, testString + '2');
+          expect(newEvent.locale, '${testString}2');
           expect(newEvent.location, 1);
-          expect(newEvent.key, testString + '3');
+          expect(newEvent.key, '${testString}3');
           expect(newEvent.metaKey, isTrue);
           expect(newEvent.repeat, isTrue);
           expect(newEvent.shiftKey, isTrue);
@@ -1162,21 +1162,21 @@ main() {
             timeStamp: 100,
             type: 'non-default',
             altKey: true,
-            changedTouches: testString + '1',
+            changedTouches: '${testString}1',
             ctrlKey: true,
             metaKey: true,
             shiftKey: true,
-            targetTouches: testString + '2',
-            touches: testString + '3',
+            targetTouches: '${testString}2',
+            touches: '${testString}3',
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
-          expect(baseEvent.changedTouches, testString + '1');
+          expect(baseEvent.changedTouches, '${testString}1');
           expect(baseEvent.ctrlKey, isTrue);
           expect(baseEvent.metaKey, isTrue);
           expect(baseEvent.shiftKey, isTrue);
-          expect(baseEvent.targetTouches, testString + '2');
-          expect(baseEvent.touches, testString + '3');
+          expect(baseEvent.targetTouches, '${testString}2');
+          expect(baseEvent.touches, '${testString}3');
 
           final newElement = DivElement();
           final newEvent = createSyntheticTouchEvent(
@@ -1194,22 +1194,22 @@ main() {
             timeStamp: 200,
             type: 'updated non-default',
             altKey: false,
-            changedTouches: updatedTestString + '1',
+            changedTouches: '${updatedTestString}1',
             ctrlKey: false,
             metaKey: false,
             shiftKey: false,
-            targetTouches: updatedTestString + '2',
-            touches: updatedTestString + '3',
+            targetTouches: '${updatedTestString}2',
+            touches: '${updatedTestString}3',
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
           expect(newEvent.altKey, isFalse);
-          expect(newEvent.changedTouches, updatedTestString + '1');
+          expect(newEvent.changedTouches, '${updatedTestString}1');
           expect(newEvent.ctrlKey, isFalse);
           expect(newEvent.metaKey, isFalse);
           expect(newEvent.shiftKey, isFalse);
-          expect(newEvent.targetTouches, updatedTestString + '2');
-          expect(newEvent.touches, updatedTestString + '3');
+          expect(newEvent.targetTouches, '${updatedTestString}2');
+          expect(newEvent.touches, '${updatedTestString}3');
         });
 
         test('when the named parameters are null', () {
@@ -1230,31 +1230,31 @@ main() {
             timeStamp: 100,
             type: 'non-default',
             altKey: true,
-            changedTouches: testString + '1',
+            changedTouches: '${testString}1',
             ctrlKey: true,
             metaKey: true,
             shiftKey: true,
-            targetTouches: testString + '2',
-            touches: testString + '3',
+            targetTouches: '${testString}2',
+            touches: '${testString}3',
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
-          expect(baseEvent.changedTouches, testString + '1');
+          expect(baseEvent.changedTouches, '${testString}1');
           expect(baseEvent.ctrlKey, isTrue);
           expect(baseEvent.metaKey, isTrue);
           expect(baseEvent.shiftKey, isTrue);
-          expect(baseEvent.targetTouches, testString + '2');
-          expect(baseEvent.touches, testString + '3');
+          expect(baseEvent.targetTouches, '${testString}2');
+          expect(baseEvent.touches, '${testString}3');
 
           final newEvent = createSyntheticTouchEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
           expect(newEvent.altKey, isTrue);
-          expect(newEvent.changedTouches, testString + '1');
+          expect(newEvent.changedTouches, '${testString}1');
           expect(newEvent.ctrlKey, isTrue);
           expect(newEvent.metaKey, isTrue);
           expect(newEvent.shiftKey, isTrue);
-          expect(newEvent.targetTouches, testString + '2');
-          expect(newEvent.touches, testString + '3');
+          expect(newEvent.targetTouches, '${testString}2');
+          expect(newEvent.touches, '${testString}3');
         });
       });
     });
@@ -1286,14 +1286,14 @@ main() {
             target: element,
             timeStamp: 100,
             type: 'non-default',
-            propertyName: testString + '1',
+            propertyName: '${testString}1',
             elapsedTime: 200,
-            pseudoElement: testString + '2',
+            pseudoElement: '${testString}2',
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
-          expect(baseEvent.propertyName, testString + '1');
+          expect(baseEvent.propertyName, '${testString}1');
           expect(baseEvent.elapsedTime, 200);
-          expect(baseEvent.pseudoElement, testString + '2');
+          expect(baseEvent.pseudoElement, '${testString}2');
 
           final newElement = DivElement();
           final newEvent = createSyntheticTransitionEvent(
@@ -1310,15 +1310,15 @@ main() {
             target: newElement,
             timeStamp: 200,
             type: 'updated non-default',
-            propertyName: updatedTestString + '1',
+            propertyName: '${updatedTestString}1',
             elapsedTime: 300,
-            pseudoElement: updatedTestString + '2',
+            pseudoElement: '${updatedTestString}2',
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
-          expect(newEvent.propertyName, updatedTestString + '1');
+          expect(newEvent.propertyName, '${updatedTestString}1');
           expect(newEvent.elapsedTime, 300);
-          expect(newEvent.pseudoElement, updatedTestString + '2');
+          expect(newEvent.pseudoElement, '${updatedTestString}2');
         });
 
         test('when the named parameters are null', () {
@@ -1338,20 +1338,20 @@ main() {
             target: element,
             timeStamp: 100,
             type: 'non-default',
-            propertyName: testString + '1',
+            propertyName: '${testString}1',
             elapsedTime: 200,
-            pseudoElement: testString + '2',
+            pseudoElement: '${testString}2',
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
-          expect(baseEvent.propertyName, testString + '1');
+          expect(baseEvent.propertyName, '${testString}1');
           expect(baseEvent.elapsedTime, 200);
-          expect(baseEvent.pseudoElement, testString + '2');
+          expect(baseEvent.pseudoElement, '${testString}2');
 
           final newEvent = createSyntheticTransitionEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
-          expect(newEvent.propertyName, testString + '1');
+          expect(newEvent.propertyName, '${testString}1');
           expect(newEvent.elapsedTime, 200);
-          expect(newEvent.pseudoElement, testString + '2');
+          expect(newEvent.pseudoElement, '${testString}2');
         });
       });
     });
@@ -1383,14 +1383,14 @@ main() {
             target: element,
             timeStamp: 100,
             type: 'non-default',
-            animationName: testString + '1',
+            animationName: '${testString}1',
             elapsedTime: 200,
-            pseudoElement: testString + '2',
+            pseudoElement: '${testString}2',
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
-          expect(baseEvent.animationName, testString + '1');
+          expect(baseEvent.animationName, '${testString}1');
           expect(baseEvent.elapsedTime, 200);
-          expect(baseEvent.pseudoElement, testString + '2');
+          expect(baseEvent.pseudoElement, '${testString}2');
 
           final newElement = DivElement();
           final newEvent = createSyntheticAnimationEvent(
@@ -1407,15 +1407,15 @@ main() {
             target: newElement,
             timeStamp: 200,
             type: 'updated non-default',
-            animationName: updatedTestString + '1',
+            animationName: '${updatedTestString}1',
             elapsedTime: 300,
-            pseudoElement: updatedTestString + '2',
+            pseudoElement: '${updatedTestString}2',
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
-          expect(newEvent.animationName, updatedTestString + '1');
+          expect(newEvent.animationName, '${updatedTestString}1');
           expect(newEvent.elapsedTime, 300);
-          expect(newEvent.pseudoElement, updatedTestString + '2');
+          expect(newEvent.pseudoElement, '${updatedTestString}2');
         });
 
         test('when the named parameters are null', () {
@@ -1435,20 +1435,20 @@ main() {
             target: element,
             timeStamp: 100,
             type: 'non-default',
-            animationName: testString + '1',
+            animationName: '${testString}1',
             elapsedTime: 200,
-            pseudoElement: testString + '2',
+            pseudoElement: '${testString}2',
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
-          expect(baseEvent.animationName, testString + '1');
+          expect(baseEvent.animationName, '${testString}1');
           expect(baseEvent.elapsedTime, 200);
-          expect(baseEvent.pseudoElement, testString + '2');
+          expect(baseEvent.pseudoElement, '${testString}2');
 
           final newEvent = createSyntheticAnimationEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
-          expect(newEvent.animationName, testString + '1');
+          expect(newEvent.animationName, '${testString}1');
           expect(newEvent.elapsedTime, 200);
-          expect(newEvent.pseudoElement, testString + '2');
+          expect(newEvent.pseudoElement, '${testString}2');
         });
       });
     });

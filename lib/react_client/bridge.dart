@@ -33,14 +33,14 @@ abstract class Component2Bridge {
   ///
   /// Protected; use [forComponent] instead.
   @protected
-  static final Expando<Component2Bridge> bridgeForComponent = new Expando();
+  static final Expando<Component2Bridge> bridgeForComponent = Expando();
 
   const Component2Bridge();
 
   /// Returns the bridge instance associated with the given [component].
   ///
   /// This will only be available for components that are instantiated by the
-  /// [ReactDartComponentFactoryProxy2], and not when manually instantiated.
+  /// `ReactDartComponentFactoryProxy2`, and not when manually instantiated.
   ///
   /// __For internal/advanced use only.__
   static Component2Bridge forComponent(Component2 component) => bridgeForComponent[component];
@@ -79,7 +79,7 @@ class Component2BridgeImpl extends Component2Bridge {
     // Short-circuit to match the ReactJS 16 behavior of not re-rendering the component if newState is null.
     if (newState == null) return;
 
-    dynamic firstArg = jsBackingMapOrJsCopy(newState);
+    final dynamic firstArg = jsBackingMapOrJsCopy(newState);
 
     if (callback == null) {
       component.jsThis.setState(firstArg);
@@ -92,10 +92,11 @@ class Component2BridgeImpl extends Component2Bridge {
 
   @override
   void setStateWithUpdater(Component2 component, StateUpdaterCallback stateUpdater, SetStateCallback callback) {
+    // ignore: avoid_types_on_closure_parameters
     final firstArg = allowInterop((JsMap jsPrevState, JsMap jsProps, [_]) {
       final value = stateUpdater(
-        new JsBackedMap.backedBy(jsPrevState),
-        new JsBackedMap.backedBy(jsProps),
+        JsBackedMap.backedBy(jsPrevState),
+        JsBackedMap.backedBy(jsProps),
       );
       if (value == null) return null;
       return jsBackingMapOrJsCopy(value);
@@ -125,9 +126,9 @@ class Component2BridgeImpl extends Component2Bridge {
         String secret,
       ) {
         // Create a Dart consumable version of the JsMap.
-        var convertedProps = JsBackedMap.fromJs(props);
+        final convertedProps = JsBackedMap.fromJs(props);
         // Call the users validator with the newly wrapped props.
-        var error = validator(
+        final error = validator(
             convertedProps,
             PropValidatorInfo(
               propName: propName,

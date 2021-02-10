@@ -14,7 +14,7 @@ import 'shared_type_tester.dart';
 
 main() {
   void testTypeValue(dynamic typeToTest) {
-    var mountNode = new html.DivElement();
+    final mountNode = html.DivElement();
     var contextTypeRef;
     var consumerRef;
     react_dom.render(
@@ -45,7 +45,7 @@ main() {
     });
 
     group('calculateChangeBits argument functions correctly', () {
-      var mountNode = new html.DivElement();
+      final mountNode = html.DivElement();
       _ContextProviderWrapper providerRef;
       _ContextConsumerWrapper consumerEvenRef;
       _ContextConsumerWrapper consumerOddRef;
@@ -100,7 +100,7 @@ main() {
 }
 
 int calculateChangedBits(currentValue, nextValue) {
-  int result = 0;
+  var result = 0;
   if (nextValue % 2 == 0) {
     // Bit for even values
     result |= 1 << 2;
@@ -116,43 +116,49 @@ var TestCalculateChangedBitsContext = react.createContext(1, calculateChangedBit
 
 var TestContext = react.createContext();
 
-final ContextProviderWrapper = react.registerComponent2(() => new _ContextProviderWrapper());
+final ContextProviderWrapper = react.registerComponent2(() => _ContextProviderWrapper());
 
 class _ContextProviderWrapper extends react.Component2 {
+  @override
   get initialState {
-    return {'counter': 1};
+    return const {'counter': 1};
   }
 
   increment() {
-    this.setState({'counter': state['counter'] + 1});
+    setState({'counter': state['counter'] + 1});
   }
 
+  @override
   render() {
     return react.div({}, [
-      props['contextToUse']
+      (props['contextToUse'] as react.Context)
           .Provider({'value': props['mode'] == 'increment' ? state['counter'] : props['value']}, props['children'])
     ]);
   }
 }
 
-final ContextConsumerWrapper = react.registerComponent2(() => new _ContextConsumerWrapper());
+final ContextConsumerWrapper = react.registerComponent2(() => _ContextConsumerWrapper());
 
 class _ContextConsumerWrapper extends react.Component2 {
   dynamic latestValue;
+  @override
   render() {
-    return props['contextToUse'].Consumer({'unstable_observedBits': props['unstable_observedBits']}, (value) {
+    return (props['contextToUse'] as react.Context).Consumer({'unstable_observedBits': props['unstable_observedBits']},
+        (value) {
       latestValue = value;
       return react.div({}, '$value');
     });
   }
 }
 
-final ContextTypeComponent = react.registerComponent2(() => new _ContextTypeComponent());
+final ContextTypeComponent = react.registerComponent2(() => _ContextTypeComponent());
 
 class _ContextTypeComponent extends react.Component2 {
+  @override
   var contextType = TestContext;
 
+  @override
   render() {
-    return react.div({}, '${this.context}');
+    return react.div({}, '$context');
   }
 }

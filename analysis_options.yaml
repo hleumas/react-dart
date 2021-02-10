@@ -1,12 +1,13 @@
+include: package:workiva_analysis_options/v1.recommended.yaml
+
 analyzer:
-  strong-mode:
-    implicit-casts: true
-    implicit-dynamic: true
+  errors:
+    must_call_super: error
+    unused_import: warning
+    duplicate_import: warning
+    comment_references: info
 linter:
   rules:
-    - avoid_private_typedef_functions
-    - await_only_futures
-    - cancel_subscriptions
-    - close_sinks
-    - unawaited_futures
-    - avoid_init_to_null
+    prefer_if_elements_to_conditional_expressions: false
+    overridden_fields: false
+    type_annotate_public_apis: false

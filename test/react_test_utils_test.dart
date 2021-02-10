@@ -28,7 +28,7 @@ void main() {
       wrapperComponent: component2.wrapperComponent);
 }
 
-testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent, dynamic wrapperComponent}) {
+testUtils({isComponent2 = false, dynamic eventComponent, dynamic sampleComponent, dynamic wrapperComponent}) {
   var component;
   Element domNode;
 
@@ -48,8 +48,8 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
     });
 
     tearDown(() {
-      ReactElement renderedOutput = shallowRenderer.getRenderOutput();
-      var props = getProps(renderedOutput);
+      final renderedOutput = shallowRenderer.getRenderOutput();
+      final props = getProps(renderedOutput);
 
       expect(props['className'], 'test');
       expect(props['id'], 'createRendererTest');
@@ -72,9 +72,9 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
     });
 
     void testEvent(
-      void event(dynamic instanceOrNode, Map eventData),
+      void Function(dynamic instanceOrNode, Map eventData) event,
       String eventName,
-      void expectEventType(SyntheticEvent e),
+      void Function(SyntheticEvent e) expectEventType,
     ) {
       final eventHandlerName = 'on${eventName[0].toUpperCase() + eventName.substring(1)}';
       eventName = eventName.toLowerCase();
@@ -107,7 +107,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
             eventHandlerName: (e) {
               capturedEvent = e;
             },
-            "ref": (r) => ref = r,
+            'ref': (r) => ref = r,
           }));
 
           event(ref, eventData);
@@ -118,7 +118,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
 
     group('event', () {
       void Function(SyntheticEvent) _expectEventType(SyntheticEventType type) {
-        return (SyntheticEvent event) {
+        return (event) {
           expect(event.isClipboardEvent, type == SyntheticEventType.syntheticClipboardEvent);
           expect(event.isKeyboardEvent, type == SyntheticEventType.syntheticKeyboardEvent);
           expect(event.isCompositionEvent, type == SyntheticEventType.syntheticCompositionEvent);
@@ -205,10 +205,11 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
       const testKeyCode = 42;
 
       String callInfo;
-      bool wasStopPropagationCalled = false;
+      var wasStopPropagationCalled = false;
 
       final renderedNode = renderIntoDocument(div({
-        'onKeyDown': (event) {
+        // ignore: avoid_types_on_closure_parameters
+        'onKeyDown': (SyntheticKeyboardEvent event) {
           event.stopPropagation();
           callInfo = 'onKeyDown ${event.keyCode}';
         }
@@ -228,21 +229,21 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
 
   test('findRenderedDOMComponentWithClass on a Component${isComponent2 ? "2" : ""}', () {
     component = renderIntoDocument(sampleComponent({}));
-    var spanComponent = findRenderedDOMComponentWithClass(component, 'span1');
+    final spanComponent = findRenderedDOMComponentWithClass(component, 'span1');
 
     expect(getProperty(spanComponent, 'tagName'), equals('SPAN'));
   });
 
   test('findRenderedDOMComponentWithTag on a Component${isComponent2 ? "2" : ""}', () {
     component = renderIntoDocument(sampleComponent({}));
-    var h1Component = findRenderedDOMComponentWithTag(component, 'h1');
+    final h1Component = findRenderedDOMComponentWithTag(component, 'h1');
 
     expect(getProperty(h1Component, 'tagName'), equals('H1'));
   });
 
   test('findRenderedComponentWithTypeV2 on a Component${isComponent2 ? "2" : ""}', () {
     component = renderIntoDocument(wrapperComponent({}, [sampleComponent({})]));
-    var result = findRenderedComponentWithTypeV2(component, sampleComponent);
+    final result = findRenderedComponentWithTypeV2(component, sampleComponent);
     expect(isCompositeComponentWithTypeV2(result, sampleComponent), isTrue);
   });
 
@@ -261,7 +262,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
   });
 
   group('isCompositeComponentWithTypeV2 on a Component${isComponent2 ? "2" : ""}', () {
-    var renderedInstance = renderIntoDocument(sampleComponent({}));
+    final renderedInstance = renderIntoDocument(sampleComponent({}));
 
     test('returns true when element is a composite component (created with React.createClass()) of the specified type',
         () {
@@ -278,7 +279,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
   group('isDOMComponent on a Component${isComponent2 ? "2" : ""}', () {
     test('returns true when argument is a DOM component', () {
       component = renderIntoDocument(sampleComponent({}));
-      var h1Element = findRenderedDOMComponentWithTag(component, 'h1');
+      final h1Element = findRenderedDOMComponentWithTag(component, 'h1');
 
       expect(isDOMComponent(h1Element), isTrue);
     });
@@ -312,7 +313,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
     component =
         renderIntoDocument(wrapperComponent({}, [sampleComponent({}), sampleComponent({}), eventComponent({})]));
 
-    var results = scryRenderedComponentsWithTypeV2(component, sampleComponent);
+    final results = scryRenderedComponentsWithTypeV2(component, sampleComponent);
 
     expect(results.length, 2);
     expect(isCompositeComponentWithTypeV2(results[0], sampleComponent), isTrue);
@@ -326,7 +327,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
       span({})
     ]));
 
-    var results = scryRenderedDOMComponentsWithClass(component, 'divClass');
+    final results = scryRenderedDOMComponentsWithClass(component, 'divClass');
 
     expect(results.length, 2);
     expect(getProperty(results[0], 'tagName'), equals('DIV'));
@@ -336,7 +337,7 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
   test('scryRenderedDOMComponentsWithTag', () {
     component = renderIntoDocument(wrapperComponent({}, [div({}), div({}), span({})]));
 
-    var results = scryRenderedDOMComponentsWithTag(component, 'div');
+    final results = scryRenderedDOMComponentsWithTag(component, 'div');
 
     expect(results.length, 3);
     expect(getProperty(results[0], 'tagName'), equals('DIV'));
@@ -345,10 +346,10 @@ testUtils({isComponent2: false, dynamic eventComponent, dynamic sampleComponent,
   });
 
   test('renderIntoDocument with a Component${isComponent2 ? "2" : ""}', () {
-    var reactComponent = renderIntoDocument(sampleComponent({}));
-    var divElements = scryRenderedDOMComponentsWithTag(reactComponent, 'div');
-    var h1Elements = scryRenderedDOMComponentsWithTag(reactComponent, 'h1');
-    var spanElements = scryRenderedDOMComponentsWithTag(reactComponent, 'span');
+    final reactComponent = renderIntoDocument(sampleComponent({}));
+    final divElements = scryRenderedDOMComponentsWithTag(reactComponent, 'div');
+    final h1Elements = scryRenderedDOMComponentsWithTag(reactComponent, 'h1');
+    final spanElements = scryRenderedDOMComponentsWithTag(reactComponent, 'span');
 
     expect(divElements.length, equals(3));
     // First div should be the parent div created by renderIntoDocument()

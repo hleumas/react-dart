@@ -4,7 +4,7 @@ library hooks_test;
 
 import 'dart:html';
 
-import "package:js/js.dart";
+import 'package:js/js.dart';
 import 'package:react/hooks.dart';
 import 'package:react/react.dart' as react;
 import 'package:react/react.dart';
@@ -25,9 +25,9 @@ main() {
       ButtonElement setWithUpdaterButtonRef;
 
       setUpAll(() {
-        var mountNode = DivElement();
+        final mountNode = DivElement();
 
-        UseStateTest = react.registerFunctionComponent((Map props) {
+        UseStateTest = react.registerFunctionComponent((props) {
           final text = useStateLazy(() {
             return 'initialValue';
           });
@@ -115,9 +115,9 @@ main() {
       }
 
       setUpAll(() {
-        var mountNode = DivElement();
+        final mountNode = DivElement();
 
-        UseReducerTest = react.registerFunctionComponent((Map props) {
+        UseReducerTest = react.registerFunctionComponent((props) {
           final state = useReducer(reducer, {
             'text': 'initialValue',
             'count': 0,
@@ -209,10 +209,10 @@ main() {
         }
 
         setUpAll(() {
-          var mountNode = DivElement();
+          final mountNode = DivElement();
 
-          UseReducerTest = react.registerFunctionComponent((Map props) {
-            final ReducerHook<Map, Map, int> state = useReducerLazy(reducer2, props['initialCount'], initializeCount);
+          UseReducerTest = react.registerFunctionComponent((props) {
+            final state = useReducerLazy<Map, Map, int>(reducer2, props['initialCount'], initializeCount);
 
             return react.div({}, [
               react.div({
@@ -282,21 +282,21 @@ main() {
       ButtonElement incrementDeltaButtonRef;
 
       setUpAll(() {
-        var mountNode = DivElement();
+        final mountNode = DivElement();
 
-        UseCallbackTest = react.registerFunctionComponent((Map props) {
+        UseCallbackTest = react.registerFunctionComponent((props) {
           final count = useState(0);
           final delta = useState(1);
 
-          var incrementNoDep = useCallback((_) {
+          final incrementNoDep = useCallback((_) {
             count.setWithUpdater((prev) => prev + delta.value);
           }, []);
 
-          var incrementWithDep = useCallback((_) {
+          final incrementWithDep = useCallback((_) {
             count.setWithUpdater((prev) => prev + delta.value);
           }, [delta.value]);
 
-          var incrementDelta = useCallback((_) {
+          final incrementDelta = useCallback((_) {
             delta.setWithUpdater((prev) => prev + 1);
           }, []);
 
@@ -376,7 +376,7 @@ main() {
     group('useContext -', () {
       DivElement mountNode;
       _ContextProviderWrapper providerRef;
-      int currentCount = 0;
+      var currentCount = 0;
       Context<int> testContext;
       Function useContextTestFunctionComponent;
 
@@ -389,7 +389,7 @@ main() {
           return react.div({
             'key': 'uct1'
           }, [
-            react.div({'key': 'uct2'}, ['useContext counter value is ${context}']),
+            react.div({'key': 'uct2'}, ['useContext counter value is $context']),
           ]);
         }
 
@@ -436,7 +436,7 @@ main() {
     });
 
     group('useRef -', () {
-      var mountNode = DivElement();
+      final mountNode = DivElement();
       ReactDartFunctionComponentFactoryProxy UseRefTest;
       ButtonElement reRenderButton;
       var noInitRef;
@@ -447,7 +447,7 @@ main() {
       var refFromCreateRef;
 
       setUpAll(() {
-        UseRefTest = react.registerFunctionComponent((Map props) {
+        UseRefTest = react.registerFunctionComponent((props) {
           noInitRef = useRef();
           initRef = useRef(mountNode);
           domElementRef = useRef();
@@ -456,13 +456,9 @@ main() {
           refFromUseRef = useRef();
           refFromCreateRef = react.createRef();
 
-          if (refFromUseRef.current == null) {
-            refFromUseRef.current = renderIndex.value;
-          }
+          refFromUseRef.current ??= renderIndex.value;
 
-          if (refFromCreateRef.current == null) {
-            refFromCreateRef.current = renderIndex.value;
-          }
+          refFromCreateRef.current ??= renderIndex.value;
 
           return react.Fragment({}, [
             react.input({'ref': domElementRef}),
@@ -521,9 +517,9 @@ main() {
       ButtonElement incrementButtonRef;
 
       // Count how many times createFunction() is called for each variation of dependencies.
-      int createFunctionCallCountWithDeps = 0;
-      int createFunctionCallCountNoDeps = 0;
-      int createFunctionCallCountEmptyDeps = 0;
+      var createFunctionCallCountWithDeps = 0;
+      var createFunctionCallCountNoDeps = 0;
+      var createFunctionCallCountEmptyDeps = 0;
 
       // Keeps track of return value of useMemo() for each variation of dependencies.
       int returnValueWithDeps;
@@ -540,7 +536,7 @@ main() {
       setUpAll(() {
         final mountNode = DivElement();
 
-        UseMemoTest = react.registerFunctionComponent((Map props) {
+        UseMemoTest = react.registerFunctionComponent((props) {
           final reRender = useState(0);
           count = useState(5);
 
@@ -644,7 +640,7 @@ main() {
 
     group('useImperativeHandle -', () {
       group('updates `ref.current` to the return value of `createHandle()`', () {
-        var mountNode = DivElement();
+        final mountNode = DivElement();
         ReactDartFunctionComponentFactoryProxy UseImperativeHandleTest;
         ButtonElement incrementButton;
         ButtonElement reRenderButtonRef1;
@@ -655,7 +651,7 @@ main() {
         StateHook<int> count;
 
         setUpAll(() {
-          var NoDepsComponent = react.forwardRef2((props, ref) {
+          final NoDepsComponent = react.forwardRef2((props, ref) {
             count = useState(0);
 
             useImperativeHandle(
@@ -666,8 +662,8 @@ main() {
             return react.div({'ref': ref}, count.value);
           });
 
-          var EmptyDepsComponent = react.forwardRef2((props, ref) {
-            var count = useState(0);
+          final EmptyDepsComponent = react.forwardRef2((props, ref) {
+            final count = useState(0);
 
             useImperativeHandle(ref, () => count.value, []);
 
@@ -680,8 +676,8 @@ main() {
             ]);
           });
 
-          var DepsComponent = react.forwardRef2((props, ref) {
-            var count = useState(0);
+          final DepsComponent = react.forwardRef2((props, ref) {
+            final count = useState(0);
 
             useImperativeHandle(ref, () => count.value, [count.value]);
 
@@ -694,9 +690,9 @@ main() {
             ]);
           });
 
-          var NullRefComponent = react.registerFunctionComponent((props) {
-            var count = useState(0);
-            Ref someRefThatIsNotSet = props['someRefThatIsNotSet'];
+          final NullRefComponent = react.registerFunctionComponent((props) {
+            final count = useState(0);
+            final Ref someRefThatIsNotSet = props['someRefThatIsNotSet'];
 
             useImperativeHandle(someRefThatIsNotSet, () => count.value, [count.value]);
 
@@ -713,7 +709,7 @@ main() {
               reason: 'Hook should not throw if the ref is null');
           react_dom.unmountComponentAtNode(mountNode);
 
-          UseImperativeHandleTest = react.registerFunctionComponent((Map props) {
+          UseImperativeHandleTest = react.registerFunctionComponent((props) {
             noDepsRef = useRef();
             emptyDepsRef = useRef();
             depsRef = useRef();
@@ -800,7 +796,7 @@ main() {
       setUpAll(() {
         final mountNode = DivElement();
 
-        UseDebugValueTest1 = react.registerFunctionComponent((Map props) {
+        UseDebugValueTest1 = react.registerFunctionComponent((props) {
           isOnline1 = useFriendStatus();
 
           return react.li({
@@ -810,7 +806,7 @@ main() {
           ]);
         });
 
-        UseDebugValueTest2 = react.registerFunctionComponent((Map props) {
+        UseDebugValueTest2 = react.registerFunctionComponent((props) {
           isOnline2 = useFriendStatusWithFormatFunction();
 
           return react.li({
@@ -850,17 +846,19 @@ main() {
 ReactDartComponentFactoryProxy2 ContextProviderWrapper = react.registerComponent2(() => _ContextProviderWrapper());
 
 class _ContextProviderWrapper extends react.Component2 {
+  @override
   get initialState {
     return {'counter': 1};
   }
 
   increment() {
-    this.setState({'counter': state['counter'] + 1});
+    setState({'counter': state['counter'] + 1});
   }
 
+  @override
   render() {
     return react.div({}, [
-      props['contextToUse']
+      (props['contextToUse'] as Context)
           .Provider({'value': props['mode'] == 'increment' ? state['counter'] : props['value']}, props['children'])
     ]);
   }
@@ -891,7 +889,7 @@ void testEffectHook(Function effectHook) {
     useEffectWithEmptyDepsCallCount = 0;
     useEffectCleanupWithEmptyDepsCallCount = 0;
 
-    UseEffectTest = react.registerFunctionComponent((Map props) {
+    UseEffectTest = react.registerFunctionComponent((props) {
       final count = useState(0);
       final countDown = useState(0);
 

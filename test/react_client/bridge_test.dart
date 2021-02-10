@@ -38,13 +38,13 @@ main() {
 
     group('- Component2BridgeImpl', () {
       test('.bridgeFactory returns a const instance of Component2BridgeImpl', () {
-        expect(Component2BridgeImpl.bridgeFactory(new _Foo()), same(const Component2BridgeImpl()));
+        expect(Component2BridgeImpl.bridgeFactory(_Foo()), same(const Component2BridgeImpl()));
       });
     });
   });
 }
 
-final Foo = react.registerComponent2(() => new _Foo());
+final Foo = react.registerComponent2(() => _Foo());
 
 class _Foo extends react.Component2 {
   @override
@@ -53,8 +53,8 @@ class _Foo extends react.Component2 {
 
 List<Map> customBridgeCalls;
 
-final BridgeTest = react.registerComponent2(() => new _BridgeTest(), bridgeFactory: (component) {
-  final returnedBridge = new CustomComponent2Bridge();
+final BridgeTest = react.registerComponent2(() => _BridgeTest(), bridgeFactory: (component) {
+  final returnedBridge = CustomComponent2Bridge();
   customBridgeCalls?.add({
     'component': component,
     'returnedBridge': returnedBridge,

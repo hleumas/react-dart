@@ -13,7 +13,7 @@ main() {
       Element mountNode;
 
       setUp(() {
-        mountNode = new DivElement();
+        mountNode = DivElement();
       });
 
       tearDown(() {
@@ -21,7 +21,7 @@ main() {
       });
 
       test('with simple children', () {
-        final portalTargetNode = new Element.div();
+        final portalTargetNode = Element.div();
         final portal = ReactDom.createPortal('foo', portalTargetNode);
         react_dom.render(portal, mountNode);
 
@@ -29,7 +29,7 @@ main() {
       });
 
       test('with nested list children', () {
-        final portalTargetNode = new Element.div();
+        final portalTargetNode = Element.div();
         final portal = ReactDom.createPortal([
           ['foo'],
           [

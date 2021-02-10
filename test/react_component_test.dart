@@ -9,7 +9,7 @@ main() {
     Component2 component;
 
     setUpAll(() {
-      component = new MyComponent();
+      component = MyComponent();
     });
 
     group('throws when unsupported lifecycle methods are called (e.g., via super-calls)', () {

@@ -38,7 +38,7 @@ import 'package:react/src/react_test_utils/simulate_wrappers.dart' as sw;
 /// * For custom composite components React.createClass()-based components, this will return the [ReactClass].
 dynamic getComponentTypeV2(ReactComponentFactoryProxy componentFactory) => componentFactory.type;
 
-typedef bool ComponentTestFunction(/* [1] */ component);
+typedef ComponentTestFunction = bool Function(/* [1] */ dynamic component);
 
 dynamic _jsifyEventData(Map eventData) => jsifyAndAllowInterop(eventData ?? const {});
 
@@ -50,7 +50,7 @@ dynamic _jsifyEventData(Map eventData) => jsifyAndAllowInterop(eventData ?? cons
 ///   Simulate.{eventName}(Element node, [Map] eventData)
 ///
 /// This should include all events documented at:
-/// http://facebook.github.io/react/docs/events.html
+/// https://reactjs.org/docs/events.html
 class Simulate {
   static void animationEnd(/* [1] */ node, [Map eventData]) =>
       sw.Simulate.animationEnd(node, _jsifyEventData(eventData));
@@ -236,7 +236,7 @@ external ReactClass mockComponent(ReactClass componentClass, String mockTagName)
 
 /// Returns a ReactShallowRenderer instance
 ///
-/// More info on using shallow rendering: https://facebook.github.io/react/docs/test-utils.html#shallow-rendering
+/// More info on using shallow rendering: https://reactjs.org/docs/test-renderer.html
 @JS('React.addons.TestUtils.createRenderer')
 external ReactShallowRenderer createRenderer();
 

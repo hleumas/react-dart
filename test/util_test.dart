@@ -53,14 +53,14 @@ _FunctionFoo(Map props) {
   return react.div({});
 }
 
-final Foo = react.registerComponent(() => new _Foo());
+final Foo = react.registerComponent(() => _Foo());
 
 class _Foo extends react.Component {
   @override
   render() => react.div({});
 }
 
-final Foo2 = react.registerComponent2(() => new _Foo2());
+final Foo2 = react.registerComponent2(() => _Foo2());
 
 class _Foo2 extends react.Component2 {
   @override

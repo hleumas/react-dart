@@ -1,13 +1,13 @@
 /// Provides detection and patching of the bug described in <https://github.com/dart-lang/sdk/issues/27647>,
-/// in which getters/setters with the identifier `name` don't work for emulated function classes, like [UiProps].
+/// in which getters/setters with the identifier `name` don't work for emulated function classes, like `UiProps`.
 @JS()
 library react.ddc_emulated_function_name_bug;
 
 import 'package:js/js.dart';
 
-/// Create a reduced test case of the issue, using an emulated function pattern that is similar to [UiProps].
+/// Create a reduced test case of the issue, using an emulated function pattern that is similar to `UiProps`.
 ///
-/// We can't use [UiProps] itself, since it uses [isBugPresent], and that would cause a cyclic initialization error.
+/// We can't use `UiProps` itself, since it uses [isBugPresent], and that would cause a cyclic initialization error.
 class _NsmEmulatedFunctionWithNameProperty implements Function {
   void call();
 
@@ -29,7 +29,7 @@ class _NsmEmulatedFunctionWithNameProperty implements Function {
 final bool isBugPresent = (() {
   const testValue = 'test value';
 
-  var testObject = new _NsmEmulatedFunctionWithNameProperty();
+  final testObject = _NsmEmulatedFunctionWithNameProperty();
 
   try {
     // In the DDC, this throws:
@@ -69,11 +69,11 @@ external void _defineProperty(dynamic object, String propertyName, _PropertyDesc
 ///
 /// __This functionality is unstable, and should not be used when [isBugPresent] is `false`.__
 ///
-/// This method also had undefined behavior on non-[UiProps] instances.
+/// This method also had undefined behavior on non-`UiProps` instances.
 void patchName(dynamic object) {
   var current = object;
   while ((current = _getPrototypeOf(current)) != null) {
-    var nameDescriptor = _getOwnPropertyDescriptor(current, 'name');
+    final nameDescriptor = _getOwnPropertyDescriptor(current, 'name');
 
     if (nameDescriptor != null) {
       _defineProperty(object, 'name', nameDescriptor);

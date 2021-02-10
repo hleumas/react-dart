@@ -27,7 +27,7 @@ main() {
             react.div({}),
           ])
         ]),
-        new Element.div(),
+        Element.div(),
       );
 
       expect(wrappingDivRef.children, hasLength(4));
