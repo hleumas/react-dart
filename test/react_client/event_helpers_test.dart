@@ -122,6 +122,12 @@ main() {
       when(nativeKeyboardEvent.metaKey).thenReturn(false);
       when(nativeKeyboardEvent.repeat).thenReturn(false);
       when(nativeKeyboardEvent.shiftKey).thenReturn(false);
+      when(nativeKeyboardEvent.detail).thenReturn(1);
+      when(nativeKeyboardEvent.view).thenReturn(window);
+      when(nativeKeyboardEvent.getModifierState('Alt')).thenAnswer((_) {
+        calls.add('getModifierState');
+        return false;
+      });
 
       expect(nativeKeyboardEvent.defaultPrevented, isFalse);
 
@@ -154,6 +160,10 @@ main() {
       expect(syntheticKeyboardEvent.metaKey, isFalse);
       expect(syntheticKeyboardEvent.repeat, isFalse);
       expect(syntheticKeyboardEvent.shiftKey, isFalse);
+      expect(syntheticKeyboardEvent.detail, 1);
+      expect(syntheticKeyboardEvent.view, window);
+      expect(() => syntheticKeyboardEvent.getModifierState('Alt'), returnsNormally);
+      expect(calls, contains('getModifierState'));
     });
 
     test('wrapNativeMouseEvent', () {
@@ -182,6 +192,12 @@ main() {
       when(nativeMouseEvent.client).thenReturn(Point(1, 2));
       when(nativeMouseEvent.page).thenReturn(Point(3, 4));
       when(nativeMouseEvent.screen).thenReturn(Point(5, 6));
+      when(nativeMouseEvent.detail).thenReturn(1);
+      when(nativeMouseEvent.view).thenReturn(window);
+      when(nativeMouseEvent.getModifierState('Alt')).thenAnswer((_) {
+        calls.add('getModifierState');
+        return false;
+      });
 
       var syntheticMouseEvent = wrapNativeMouseEvent(nativeMouseEvent);
 
@@ -215,6 +231,10 @@ main() {
       expect(syntheticMouseEvent.screenX, 5);
       expect(syntheticMouseEvent.screenY, 6);
       expect(syntheticMouseEvent.shiftKey, isFalse);
+      expect(syntheticMouseEvent.detail, 1);
+      expect(syntheticMouseEvent.view, window);
+      expect(() => syntheticMouseEvent.getModifierState('Alt'), returnsNormally);
+      expect(calls, contains('getModifierState'));
     });
 
     test('fakeSyntheticFormEvent', () {
@@ -411,6 +431,9 @@ main() {
         expect(e.shiftKey, isFalse);
         expect(e.keyCode, isNull);
         expect(e.charCode, isNull);
+        expect(e.detail, isNull);
+        expect(e.view, isNull);
+        expect(e.getModifierState, isA<bool Function(String)>());
       });
 
       group('merges values as expected', () {
@@ -442,6 +465,9 @@ main() {
             shiftKey: true,
             keyCode: 2,
             charCode: 3,
+            detail: 1,
+            view: window,
+            getModifierState: (_) => true,
           );
 
           testSyntheticEventBaseForMergeTests(baseEvent);
@@ -456,6 +482,9 @@ main() {
           expect(baseEvent.shiftKey, isTrue);
           expect(baseEvent.keyCode, 2);
           expect(baseEvent.charCode, 3);
+          expect(baseEvent.detail, 1);
+          expect(baseEvent.view, window);
+          expect(baseEvent.getModifierState(null), isTrue);
 
           final newElement = DivElement();
           final newEvent = createSyntheticKeyboardEvent(
@@ -483,6 +512,9 @@ main() {
             shiftKey: false,
             keyCode: 3,
             charCode: 4,
+            detail: 2,
+            view: testString,
+            getModifierState: (_) => false,
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
@@ -497,6 +529,9 @@ main() {
           expect(newEvent.shiftKey, isFalse);
           expect(newEvent.keyCode, 3);
           expect(newEvent.charCode, 4);
+          expect(newEvent.detail, 2);
+          expect(newEvent.view, testString);
+          expect(newEvent.getModifierState(null), isFalse);
         });
 
         test('when the named parameters are null', () {
@@ -527,6 +562,7 @@ main() {
             shiftKey: true,
             keyCode: 2,
             charCode: 3,
+            getModifierState: null,
           );
 
           testSyntheticEventBaseForMergeTests(baseEvent);
@@ -541,6 +577,7 @@ main() {
           expect(baseEvent.shiftKey, isTrue);
           expect(baseEvent.keyCode, 2);
           expect(baseEvent.charCode, 3);
+          expect(baseEvent.getModifierState(null), isFalse);
 
           final newEvent = createSyntheticKeyboardEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
@@ -555,6 +592,7 @@ main() {
           expect(newEvent.shiftKey, isTrue);
           expect(newEvent.keyCode, 2);
           expect(newEvent.charCode, 3);
+          expect(newEvent.getModifierState(null), isFalse);
         });
       });
     });
@@ -647,6 +685,8 @@ main() {
       test('returns normally when no parameters are provided', () {
         final e = createSyntheticFocusEvent();
         testSyntheticEventDefaults(e);
+        expect(e.detail, isNull);
+        expect(e.view, isNull);
       });
 
       group('merges values as expected', () {
@@ -667,8 +707,12 @@ main() {
             target: element,
             timeStamp: 100,
             type: 'non-default',
+            detail: 1,
+            view: window,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
+          expect(baseEvent.detail, 1);
+          expect(baseEvent.view, window);
 
           final newElement = DivElement();
           final newEvent = createSyntheticFocusEvent(
@@ -685,9 +729,13 @@ main() {
             target: newElement,
             timeStamp: 200,
             type: 'updated non-default',
+            detail: 2,
+            view: testString,
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
+          expect(newEvent.detail, 2);
+          expect(newEvent.view, testString);
         });
 
         test('when the named parameters are null', () {
@@ -802,12 +850,17 @@ main() {
         expect(e.ctrlKey, isFalse);
         expect(e.dataTransfer, isNull);
         expect(e.metaKey, isFalse);
+        expect(e.movementX, isNull);
+        expect(e.movementY, isNull);
         expect(e.pageX, isNull);
         expect(e.pageY, isNull);
         expect(e.relatedTarget, isNull);
         expect(e.screenX, isNull);
         expect(e.screenY, isNull);
         expect(e.shiftKey, isFalse);
+        expect(e.detail, isNull);
+        expect(e.view, isNull);
+        expect(e.getModifierState, isA<bool Function(String)>());
       });
 
       group('merges values as expected', () {
@@ -836,12 +889,17 @@ main() {
             ctrlKey: true,
             dataTransfer: jsifyAndAllowInterop({'dropEffect': testString}),
             metaKey: true,
+            movementX: 5,
+            movementY: 6,
             pageX: 300,
             pageY: 400,
             relatedTarget: testString,
             screenX: 500,
             screenY: 600,
             shiftKey: true,
+            detail: 1,
+            view: window,
+            getModifierState: (_) => true,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
@@ -852,12 +910,17 @@ main() {
           expect(baseEvent.ctrlKey, isTrue);
           expect(baseEvent.dataTransfer.dropEffect, testString);
           expect(baseEvent.metaKey, isTrue);
+          expect(baseEvent.movementX, 5);
+          expect(baseEvent.movementY, 6);
           expect(baseEvent.pageX, 300);
           expect(baseEvent.pageY, 400);
           expect(baseEvent.relatedTarget, testString);
           expect(baseEvent.screenX, 500);
           expect(baseEvent.screenY, 600);
           expect(baseEvent.shiftKey, isTrue);
+          expect(baseEvent.detail, 1);
+          expect(baseEvent.view, window);
+          expect(baseEvent.getModifierState(null), isTrue);
 
           final newElement = DivElement();
           final newEvent = createSyntheticMouseEvent(
@@ -882,12 +945,17 @@ main() {
             ctrlKey: false,
             dataTransfer: jsifyAndAllowInterop({'dropEffect': updatedTestString}),
             metaKey: false,
+            movementX: 50,
+            movementY: 60,
             pageX: 400,
             pageY: 500,
             relatedTarget: updatedTestString,
             screenX: 600,
             screenY: 700,
             shiftKey: false,
+            detail: 2,
+            view: testString,
+            getModifierState: (_) => false,
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
@@ -899,12 +967,17 @@ main() {
           expect(newEvent.ctrlKey, isFalse);
           expect(newEvent.dataTransfer.dropEffect, updatedTestString);
           expect(newEvent.metaKey, isFalse);
+          expect(newEvent.movementX, 50);
+          expect(newEvent.movementY, 60);
           expect(newEvent.pageX, 400);
           expect(newEvent.pageY, 500);
           expect(newEvent.relatedTarget, updatedTestString);
           expect(newEvent.screenX, 600);
           expect(newEvent.screenY, 700);
           expect(newEvent.shiftKey, isFalse);
+          expect(newEvent.detail, 2);
+          expect(newEvent.view, testString);
+          expect(newEvent.getModifierState(null), isFalse);
         });
 
         test('when the named parameters are null', () {
@@ -932,12 +1005,15 @@ main() {
             ctrlKey: true,
             dataTransfer: jsifyAndAllowInterop({'dropEffect': testString}),
             metaKey: true,
+            movementX: 5,
+            movementY: 6,
             pageX: 300,
             pageY: 400,
             relatedTarget: testString,
             screenX: 500,
             screenY: 600,
             shiftKey: true,
+            getModifierState: null,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
@@ -948,12 +1024,15 @@ main() {
           expect(baseEvent.ctrlKey, isTrue);
           expect(baseEvent.dataTransfer.dropEffect, testString);
           expect(baseEvent.metaKey, isTrue);
+          expect(baseEvent.movementX, 5);
+          expect(baseEvent.movementY, 6);
           expect(baseEvent.pageX, 300);
           expect(baseEvent.pageY, 400);
           expect(baseEvent.relatedTarget, testString);
           expect(baseEvent.screenX, 500);
           expect(baseEvent.screenY, 600);
           expect(baseEvent.shiftKey, isTrue);
+          expect(baseEvent.getModifierState(null), isFalse);
 
           final newEvent = createSyntheticMouseEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
@@ -965,12 +1044,15 @@ main() {
           expect(newEvent.ctrlKey, isTrue);
           expect(newEvent.dataTransfer.dropEffect, testString);
           expect(newEvent.metaKey, isTrue);
+          expect(baseEvent.movementX, 5);
+          expect(baseEvent.movementY, 6);
           expect(newEvent.pageX, 300);
           expect(newEvent.pageY, 400);
           expect(newEvent.relatedTarget, testString);
           expect(newEvent.screenX, 500);
           expect(newEvent.screenY, 600);
           expect(newEvent.shiftKey, isTrue);
+          expect(baseEvent.getModifierState(null), isFalse);
         });
       });
     });
@@ -990,6 +1072,9 @@ main() {
         expect(e.twist, isNull);
         expect(e.pointerType, isNull);
         expect(e.isPrimary, isNull);
+        expect(e.detail, isNull);
+        expect(e.view, isNull);
+        expect(e.getModifierState, isA<bool Function(String)>());
       });
 
       group('merges values as expected', () {
@@ -1020,6 +1105,9 @@ main() {
             twist: 8,
             pointerType: testString,
             isPrimary: false,
+            detail: 1,
+            view: window,
+            getModifierState: (_) => true,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.pointerId, 1);
@@ -1032,6 +1120,9 @@ main() {
           expect(baseEvent.twist, 8);
           expect(baseEvent.pointerType, testString);
           expect(baseEvent.isPrimary, isFalse);
+          expect(baseEvent.detail, 1);
+          expect(baseEvent.view, window);
+          expect(baseEvent.getModifierState(null), isTrue);
 
           final newElement = DivElement();
           final newEvent = createSyntheticPointerEvent(
@@ -1058,6 +1149,9 @@ main() {
             twist: 9,
             pointerType: updatedTestString,
             isPrimary: true,
+            detail: 2,
+            view: testString,
+            getModifierState: (_) => false,
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
@@ -1071,6 +1165,9 @@ main() {
           expect(newEvent.twist, 9);
           expect(newEvent.pointerType, updatedTestString);
           expect(newEvent.isPrimary, isTrue);
+          expect(newEvent.detail, 2);
+          expect(newEvent.view, testString);
+          expect(newEvent.getModifierState(null), isFalse);
         });
 
         test('when the named parameters are null', () {
@@ -1100,6 +1197,7 @@ main() {
             twist: 8,
             pointerType: testString,
             isPrimary: false,
+            getModifierState: null,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.pointerId, 1);
@@ -1112,6 +1210,7 @@ main() {
           expect(baseEvent.twist, 8);
           expect(baseEvent.pointerType, testString);
           expect(baseEvent.isPrimary, isFalse);
+          expect(baseEvent.getModifierState(null), isFalse);
 
           final newEvent = createSyntheticPointerEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
@@ -1125,6 +1224,7 @@ main() {
           expect(newEvent.twist, 8);
           expect(newEvent.pointerType, testString);
           expect(newEvent.isPrimary, isFalse);
+          expect(baseEvent.getModifierState(null), isFalse);
         });
       });
     });
@@ -1141,6 +1241,9 @@ main() {
         expect(e.shiftKey, isFalse);
         expect(e.targetTouches, isNull);
         expect(e.touches, isNull);
+        expect(e.detail, isNull);
+        expect(e.view, isNull);
+        expect(e.getModifierState, isA<bool Function(String)>());
       });
 
       group('merges values as expected', () {
@@ -1168,6 +1271,9 @@ main() {
             shiftKey: true,
             targetTouches: testString + '2',
             touches: testString + '3',
+            detail: 1,
+            view: window,
+            getModifierState: (_) => true,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
@@ -1177,6 +1283,9 @@ main() {
           expect(baseEvent.shiftKey, isTrue);
           expect(baseEvent.targetTouches, testString + '2');
           expect(baseEvent.touches, testString + '3');
+          expect(baseEvent.detail, 1);
+          expect(baseEvent.view, window);
+          expect(baseEvent.getModifierState(null), isTrue);
 
           final newElement = DivElement();
           final newEvent = createSyntheticTouchEvent(
@@ -1200,6 +1309,9 @@ main() {
             shiftKey: false,
             targetTouches: updatedTestString + '2',
             touches: updatedTestString + '3',
+            detail: 2,
+            view: testString,
+            getModifierState: (_) => false,
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
@@ -1210,6 +1322,9 @@ main() {
           expect(newEvent.shiftKey, isFalse);
           expect(newEvent.targetTouches, updatedTestString + '2');
           expect(newEvent.touches, updatedTestString + '3');
+          expect(newEvent.detail, 2);
+          expect(newEvent.view, testString);
+          expect(newEvent.getModifierState(null), isFalse);
         });
 
         test('when the named parameters are null', () {
@@ -1236,6 +1351,7 @@ main() {
             shiftKey: true,
             targetTouches: testString + '2',
             touches: testString + '3',
+            getModifierState: null,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.altKey, isTrue);
@@ -1245,6 +1361,7 @@ main() {
           expect(baseEvent.shiftKey, isTrue);
           expect(baseEvent.targetTouches, testString + '2');
           expect(baseEvent.touches, testString + '3');
+          expect(baseEvent.getModifierState(null), isFalse);
 
           final newEvent = createSyntheticTouchEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
@@ -1255,6 +1372,7 @@ main() {
           expect(newEvent.shiftKey, isTrue);
           expect(newEvent.targetTouches, testString + '2');
           expect(newEvent.touches, testString + '3');
+          expect(baseEvent.getModifierState(null), isFalse);
         });
       });
     });
@@ -1550,6 +1668,9 @@ main() {
         expect(e.deltaMode, isNull);
         expect(e.deltaY, isNull);
         expect(e.deltaZ, isNull);
+        expect(e.detail, isNull);
+        expect(e.view, isNull);
+        expect(e.getModifierState, isA<bool Function(String)>());
       });
 
       group('merges values as expected', () {
@@ -1574,12 +1695,18 @@ main() {
             deltaMode: 2,
             deltaY: 3,
             deltaZ: 4,
+            detail: 1,
+            view: window,
+            getModifierState: (_) => true,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.deltaX, 1);
           expect(baseEvent.deltaMode, 2);
           expect(baseEvent.deltaY, 3);
           expect(baseEvent.deltaZ, 4);
+          expect(baseEvent.detail, 1);
+          expect(baseEvent.view, window);
+          expect(baseEvent.getModifierState(null), isTrue);
 
           final newElement = DivElement();
           final newEvent = createSyntheticWheelEvent(
@@ -1600,6 +1727,9 @@ main() {
             deltaMode: 3,
             deltaY: 4,
             deltaZ: 5,
+            detail: 2,
+            view: testString,
+            getModifierState: (_) => false,
           );
 
           testSyntheticEventBaseAfterMerge(newEvent);
@@ -1607,6 +1737,9 @@ main() {
           expect(newEvent.deltaMode, 3);
           expect(newEvent.deltaY, 4);
           expect(newEvent.deltaZ, 5);
+          expect(newEvent.detail, 2);
+          expect(newEvent.view, testString);
+          expect(newEvent.getModifierState(null), isFalse);
         });
 
         test('when the named parameters are null', () {
@@ -1630,12 +1763,14 @@ main() {
             deltaMode: 2,
             deltaY: 3,
             deltaZ: 4,
+            getModifierState: null,
           );
           testSyntheticEventBaseForMergeTests(baseEvent);
           expect(baseEvent.deltaX, 1);
           expect(baseEvent.deltaMode, 2);
           expect(baseEvent.deltaY, 3);
           expect(baseEvent.deltaZ, 4);
+          expect(baseEvent.getModifierState(null), isFalse);
 
           final newEvent = createSyntheticWheelEvent(baseEvent: baseEvent);
           testSyntheticEventBaseForMergeTests(newEvent);
@@ -1643,6 +1778,7 @@ main() {
           expect(newEvent.deltaMode, 2);
           expect(newEvent.deltaY, 3);
           expect(newEvent.deltaZ, 4);
+          expect(baseEvent.getModifierState(null), isFalse);
         });
       });
     });
@@ -1657,28 +1793,52 @@ main() {
           test('when the event is a different type', () {
             expect(eventTypeTester(createSyntheticClipboardEvent()),
                 currentEventTypeBeingTested == SyntheticEventType.syntheticClipboardEvent ? isTrue : isFalse);
-            expect(eventTypeTester(createSyntheticKeyboardEvent()),
-                currentEventTypeBeingTested == SyntheticEventType.syntheticKeyboardEvent ? isTrue : isFalse);
+            expect(
+                eventTypeTester(createSyntheticKeyboardEvent()),
+                (currentEventTypeBeingTested == SyntheticEventType.syntheticKeyboardEvent ||
+                        currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent)
+                    ? isTrue
+                    : isFalse);
             expect(eventTypeTester(createSyntheticCompositionEvent()),
                 currentEventTypeBeingTested == SyntheticEventType.syntheticCompositionEvent ? isTrue : isFalse);
-            expect(eventTypeTester(createSyntheticFocusEvent()),
-                currentEventTypeBeingTested == SyntheticEventType.syntheticFocusEvent ? isTrue : isFalse);
+            expect(
+                eventTypeTester(createSyntheticFocusEvent()),
+                (currentEventTypeBeingTested == SyntheticEventType.syntheticFocusEvent ||
+                        currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent)
+                    ? isTrue
+                    : isFalse);
             expect(eventTypeTester(createSyntheticFormEvent()),
                 currentEventTypeBeingTested == SyntheticEventType.syntheticFormEvent ? isTrue : isFalse);
-            expect(eventTypeTester(createSyntheticMouseEvent()),
-                currentEventTypeBeingTested == SyntheticEventType.syntheticMouseEvent ? isTrue : isFalse);
-            expect(eventTypeTester(createSyntheticPointerEvent()),
-                currentEventTypeBeingTested == SyntheticEventType.syntheticPointerEvent ? isTrue : isFalse);
-            expect(eventTypeTester(createSyntheticTouchEvent()),
-                currentEventTypeBeingTested == SyntheticEventType.syntheticTouchEvent ? isTrue : isFalse);
+            expect(
+                eventTypeTester(createSyntheticMouseEvent()),
+                (currentEventTypeBeingTested == SyntheticEventType.syntheticMouseEvent ||
+                        currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent)
+                    ? isTrue
+                    : isFalse);
+            expect(
+                eventTypeTester(createSyntheticPointerEvent()),
+                (currentEventTypeBeingTested == SyntheticEventType.syntheticPointerEvent ||
+                        currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent)
+                    ? isTrue
+                    : isFalse);
+            expect(
+                eventTypeTester(createSyntheticTouchEvent()),
+                (currentEventTypeBeingTested == SyntheticEventType.syntheticTouchEvent ||
+                        currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent)
+                    ? isTrue
+                    : isFalse);
             expect(eventTypeTester(createSyntheticTransitionEvent()),
                 currentEventTypeBeingTested == SyntheticEventType.syntheticTransitionEvent ? isTrue : isFalse);
             expect(eventTypeTester(createSyntheticAnimationEvent()),
                 currentEventTypeBeingTested == SyntheticEventType.syntheticAnimationEvent ? isTrue : isFalse);
             expect(eventTypeTester(createSyntheticUIEvent()),
                 currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent ? isTrue : isFalse);
-            expect(eventTypeTester(createSyntheticWheelEvent()),
-                currentEventTypeBeingTested == SyntheticEventType.syntheticWheelEvent ? isTrue : isFalse);
+            expect(
+                eventTypeTester(createSyntheticWheelEvent()),
+                (currentEventTypeBeingTested == SyntheticEventType.syntheticWheelEvent ||
+                        currentEventTypeBeingTested == SyntheticEventType.syntheticUIEvent)
+                    ? isTrue
+                    : isFalse);
           });
 
           test('when the event is the base class', () {
@@ -2002,6 +2162,7 @@ main() {
               'dataTransfer': {
                 'files': files,
                 'types': ['d', 'e', 'f'],
+                'items': ['Object1', 'Object2', 'Object3'],
                 'effectAllowed': 'none',
                 'dropEffect': 'move',
               }
@@ -2018,6 +2179,7 @@ main() {
 
             expect(fileNames, containsAll(['name1', 'name2', 'name3']));
             expect(dataTransfer.types, containsAll(['d', 'e', 'f']));
+            expect(dataTransfer.items, hasLength(3));
             expect(dataTransfer.effectAllowed, 'none');
             expect(dataTransfer.dropEffect, 'move');
           });
@@ -2035,6 +2197,8 @@ main() {
             expect(dataTransfer.files, isEmpty);
             expect(dataTransfer.types, isNotNull);
             expect(dataTransfer.types, isEmpty);
+            expect(dataTransfer.items, isNotNull);
+            expect(dataTransfer.items, hasLength(0));
             expect(dataTransfer.effectAllowed, null);
             expect(dataTransfer.dropEffect, null);
           });
@@ -2056,6 +2220,8 @@ main() {
             expect(dataTransfer.files, isEmpty);
             expect(dataTransfer.types, isNotNull);
             expect(dataTransfer.types, isEmpty);
+            expect(dataTransfer.items, isNotNull);
+            expect(dataTransfer.items, hasLength(0));
             expect(dataTransfer.effectAllowed, 'none');
             expect(dataTransfer.dropEffect, 'none');
           });

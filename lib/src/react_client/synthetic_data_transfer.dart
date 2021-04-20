@@ -34,7 +34,17 @@ class SyntheticDataTransfer {
   /// See <https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/types>
   final List<String> types;
 
-  SyntheticDataTransfer(this.dropEffect, this.effectAllowed, this.files, this.types);
+  /// A list of the data transfer items in a drag operation.
+  ///
+  /// The list includes one item for each item in the operation and if the operation had no items, the list is empty.
+  ///
+  /// See <https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items>
+  final DataTransferItemList items;
+
+  SyntheticDataTransfer(this.dropEffect, this.effectAllowed, this.files, this.types, {DataTransferItemList items})
+      : items = items ?? _emptyDataTransferItemList;
+
+  static final _emptyDataTransferItemList = DataTransfer().items;
 }
 
 /// Wrapper for [SyntheticDataTransfer].
@@ -51,6 +61,7 @@ SyntheticDataTransfer syntheticDataTransferFactory(Object dt) {
 
   List rawFiles;
   List rawTypes;
+  DataTransferItemList rawItems;
 
   String effectAllowed;
   String dropEffect;
@@ -63,6 +74,7 @@ SyntheticDataTransfer syntheticDataTransferFactory(Object dt) {
   if (dt is DataTransfer) {
     rawFiles = dt.files;
     rawTypes = dt.types;
+    rawItems = dt.items;
 
     try {
       // Works around a bug in IE where dragging from outside the browser fails.
@@ -86,6 +98,7 @@ SyntheticDataTransfer syntheticDataTransferFactory(Object dt) {
 
     rawFiles = castedDt.files;
     rawTypes = castedDt.types;
+    rawItems = castedDt.items;
 
     try {
       // Works around a bug in IE where dragging from outside the browser fails.
@@ -107,5 +120,5 @@ SyntheticDataTransfer syntheticDataTransferFactory(Object dt) {
   final files = <File>[...?rawFiles];
   final types = <String>[...?rawTypes];
 
-  return new SyntheticDataTransfer(dropEffect, effectAllowed, files, types);
+  return new SyntheticDataTransfer(dropEffect, effectAllowed, files, types, items: rawItems);
 }

@@ -41,6 +41,9 @@ SyntheticKeyboardEvent wrapNativeKeyboardEvent(KeyboardEvent nativeEvent) {
     'shiftKey': nativeEvent.shiftKey,
     'keyCode': nativeEvent.keyCode,
     'charCode': nativeEvent.charCode,
+    'detail': nativeEvent.detail,
+    'view': nativeEvent.view,
+    'getModifierState': nativeEvent.getModifierState,
   }) as SyntheticKeyboardEvent;
 }
 
@@ -80,6 +83,9 @@ SyntheticMouseEvent wrapNativeMouseEvent(MouseEvent nativeEvent) {
     'screenX': nativeEvent.screen.x,
     'screenY': nativeEvent.screen.y,
     'shiftKey': nativeEvent.shiftKey,
+    'detail': nativeEvent.detail,
+    'view': nativeEvent.view,
+    'getModifierState': nativeEvent.getModifierState,
   }) as SyntheticMouseEvent;
 }
 
@@ -248,6 +254,9 @@ SyntheticKeyboardEvent createSyntheticKeyboardEvent({
   bool shiftKey,
   num keyCode,
   num charCode,
+  num detail,
+  /*DOMAbstractView*/ dynamic view,
+  bool Function(String key) getModifierState,
 }) {
   return jsifyAndAllowInterop({
     ..._wrapBaseEventPropertiesInMap(
@@ -276,6 +285,13 @@ SyntheticKeyboardEvent createSyntheticKeyboardEvent({
     'metaKey': metaKey ?? baseEvent?.metaKey ?? false,
     'repeat': repeat ?? baseEvent?.repeat,
     'shiftKey': shiftKey ?? baseEvent?.shiftKey ?? false,
+    'detail': detail ?? baseEvent?.detail,
+    'view': view ?? baseEvent?.view,
+    'getModifierState': getModifierState ??
+        baseEvent?.getModifierState ??
+        (_) {
+          return false;
+        },
   }) as SyntheticKeyboardEvent;
 }
 
@@ -340,6 +356,8 @@ SyntheticFocusEvent createSyntheticFocusEvent({
   num timeStamp,
   String type,
   /*DOMEventTarget*/ dynamic relatedTarget,
+  num detail,
+  /*DOMAbstractView*/ dynamic view,
 }) {
   return jsifyAndAllowInterop({
     ..._wrapBaseEventPropertiesInMap(
@@ -358,6 +376,8 @@ SyntheticFocusEvent createSyntheticFocusEvent({
       type: type,
     ),
     'relatedTarget': relatedTarget ?? baseEvent?.relatedTarget,
+    'detail': detail ?? baseEvent?.detail,
+    'view': view ?? baseEvent?.view,
   }) as SyntheticFocusEvent;
 }
 
@@ -427,12 +447,17 @@ SyntheticMouseEvent createSyntheticMouseEvent({
   bool ctrlKey,
   dynamic dataTransfer,
   bool metaKey,
+  num movementX,
+  num movementY,
   num pageX,
   num pageY,
   /*DOMEventTarget*/ dynamic relatedTarget,
   num screenX,
   num screenY,
   bool shiftKey,
+  num detail,
+  /*DOMAbstractView*/ dynamic view,
+  bool Function(String key) getModifierState,
 }) {
   return jsifyAndAllowInterop({
     ..._wrapBaseEventPropertiesInMap(
@@ -458,12 +483,21 @@ SyntheticMouseEvent createSyntheticMouseEvent({
     'ctrlKey': ctrlKey ?? baseEvent?.ctrlKey ?? false,
     'dataTransfer': dataTransfer ?? baseEvent?.dataTransfer,
     'metaKey': metaKey ?? baseEvent?.metaKey ?? false,
+    'movementX': movementX ?? baseEvent?.movementX,
+    'movementY': movementY ?? baseEvent?.movementY,
     'pageX': pageX ?? baseEvent?.pageX,
     'pageY': pageY ?? baseEvent?.pageY,
     'relatedTarget': relatedTarget ?? baseEvent?.relatedTarget,
     'screenX': screenX ?? baseEvent?.screenX,
     'screenY': screenY ?? baseEvent?.screenY,
     'shiftKey': shiftKey ?? baseEvent?.shiftKey ?? false,
+    'detail': detail ?? baseEvent?.detail,
+    'view': view ?? baseEvent?.view,
+    'getModifierState': getModifierState ??
+        baseEvent?.getModifierState ??
+        (_) {
+          return false;
+        },
   }) as SyntheticMouseEvent;
 }
 
@@ -496,6 +530,9 @@ SyntheticPointerEvent createSyntheticPointerEvent({
   num twist,
   String pointerType,
   bool isPrimary,
+  num detail,
+  /*DOMAbstractView*/ dynamic view,
+  bool Function(String key) getModifierState,
 }) {
   return jsifyAndAllowInterop({
     ..._wrapBaseEventPropertiesInMap(
@@ -523,6 +560,13 @@ SyntheticPointerEvent createSyntheticPointerEvent({
     'twist': twist ?? baseEvent?.twist,
     'pointerType': pointerType ?? baseEvent?.pointerType,
     'isPrimary': isPrimary ?? baseEvent?.isPrimary,
+    'detail': detail ?? baseEvent?.detail,
+    'view': view ?? baseEvent?.view,
+    'getModifierState': getModifierState ??
+        baseEvent?.getModifierState ??
+        (_) {
+          return false;
+        },
   }) as SyntheticPointerEvent;
 }
 
@@ -552,6 +596,9 @@ SyntheticTouchEvent createSyntheticTouchEvent({
   bool shiftKey,
   /*DOMTouchList*/ dynamic targetTouches,
   /*DOMTouchList*/ dynamic touches,
+  num detail,
+  /*DOMAbstractView*/ dynamic view,
+  bool Function(String key) getModifierState,
 }) {
   return jsifyAndAllowInterop({
     ..._wrapBaseEventPropertiesInMap(
@@ -576,6 +623,13 @@ SyntheticTouchEvent createSyntheticTouchEvent({
     'shiftKey': shiftKey ?? baseEvent?.shiftKey ?? false,
     'targetTouches': targetTouches ?? baseEvent?.targetTouches,
     'touches': touches ?? baseEvent?.touches,
+    'detail': detail ?? baseEvent?.detail,
+    'view': view ?? baseEvent?.view,
+    'getModifierState': getModifierState ??
+        baseEvent?.getModifierState ??
+        (_) {
+          return false;
+        },
   }) as SyntheticTouchEvent;
 }
 
@@ -735,6 +789,9 @@ SyntheticWheelEvent createSyntheticWheelEvent({
   num deltaMode,
   num deltaY,
   num deltaZ,
+  num detail,
+  /*DOMAbstractView*/ dynamic view,
+  bool Function(String key) getModifierState,
 }) {
   return jsifyAndAllowInterop({
     ..._wrapBaseEventPropertiesInMap(
@@ -756,6 +813,13 @@ SyntheticWheelEvent createSyntheticWheelEvent({
     'deltaMode': deltaMode ?? baseEvent?.deltaMode,
     'deltaY': deltaY ?? baseEvent?.deltaY,
     'deltaZ': deltaZ ?? baseEvent?.deltaZ,
+    'detail': detail ?? baseEvent?.detail,
+    'view': view ?? baseEvent?.view,
+    'getModifierState': getModifierState ??
+        baseEvent?.getModifierState ??
+        (_) {
+          return false;
+        },
   }) as SyntheticWheelEvent;
 }
 
