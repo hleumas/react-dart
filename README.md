@@ -40,9 +40,9 @@ If you are not familiar with the ReactJS library, read this [react tutorial](htt
 
 #### HTML
 
-In a `.html` file where Include the native javascript `react` and `react_dom` libraries
+In a `.html` file, include the native javascript `react` and `react_dom` libraries
 _(provided with this library for compatibility reasons)_ within your `.html` file,
-and add an element with an `id` to mount your React component into.
+and also add an element with an `id` to mount your React component.
 
 Lastly, add the `.js` file that Dart will generate. The file will be the name of the `.dart` file that
 contains your `main` entrypoint, with `.js` at the end.
